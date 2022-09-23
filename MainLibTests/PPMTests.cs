@@ -10,7 +10,7 @@ public class PPMTests
     {
         var c = new Canvas(5, 3);
         var ppm = new PPMCreator(c);
-        var splittedString = ppm.File.Split("\n");
+        var splittedString = ppm.FileContent.Split("\n");
         Assert.Equal("P3\r", splittedString[0]);
         Assert.Equal("5 3\r", splittedString[1]);
         Assert.Equal("255\r", splittedString[2]);
@@ -24,7 +24,7 @@ public class PPMTests
         c.WritePixel(new Color(0, 0.5, 0), 2, 1);
         c.WritePixel(new Color(-0.5, 0, 1), 4, 2);
         var ppm = new PPMCreator(c);
-        var splittedString = ppm.File.Split("\n");
+        var splittedString = ppm.FileContent.Split("\n");
         Assert.Equal("255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\r", splittedString[3]);
         Assert.Equal("0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\r", splittedString[4]);
         Assert.Equal("0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\r", splittedString[5]);
@@ -43,7 +43,7 @@ public class PPMTests
         }
 
         var ppm = new PPMCreator(c);
-        var splittedString = ppm.File.Split("\n");
+        var splittedString = ppm.FileContent.Split("\n");
         Assert.All(splittedString, x => Assert.True(x.Length < 70));
     }
 }

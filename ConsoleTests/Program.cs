@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using MainLib;
 
 namespace ConsoleTests
@@ -19,7 +18,7 @@ namespace ConsoleTests
                     (int)Math.Round(canvas.Height - proj.Position.Y));
             }
 
-            File.WriteAllText("Test.ppm", new PPMCreator(canvas).File);
+            new PPMCreator(canvas).WriteToFile();
         }
 
         private static Projectile Tick(Environment env, Projectile proj)

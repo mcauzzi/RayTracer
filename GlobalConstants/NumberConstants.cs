@@ -2,6 +2,6 @@
 {
     public static class NumberConstants
     {
-        public const double Epsilon = 0.0000001;
+        public const double Epsilon = 0.00001;
     }
 }

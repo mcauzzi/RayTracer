@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 
 namespace MainLib;
@@ -42,10 +43,15 @@ public class PPMCreator
 
         sb.AppendLine(temp);
         sb.AppendLine();
-        File = sb.ToString();
+        FileContent = sb.ToString();
     }
 
-    public string File { get; }
+    public string FileContent { get; }
+
+    public void WriteToFile()
+    {
+        File.WriteAllText("Test.ppm", FileContent);
+    }
 
     private static string ClampColor(Color c)
     {
