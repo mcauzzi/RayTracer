@@ -122,7 +122,7 @@ public class MatrixTests
     {
         var a = new Matrix(new double[,]
             { { 1, 5 }, { -3, 2 } });
-        Assert.Equal(a.GetDeterminant(), 17);
+        Assert.Equal(17, a.GetDeterminant());
     }
 
     [Fact]

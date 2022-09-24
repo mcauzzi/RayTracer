@@ -18,7 +18,7 @@ namespace ConsoleTests
                     (int)Math.Round(canvas.Height - proj.Position.Y));
             }
 
-            new PPMCreator(canvas).WriteToFile();
+            new PPMCreator(canvas).WriteToFile("Projectile");
         }
 
         private static Projectile Tick(Environment env, Projectile proj)

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MainLib;
+﻿namespace MainLib;
 
 public class Canvas
 {

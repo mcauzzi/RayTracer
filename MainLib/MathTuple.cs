@@ -1,4 +1,5 @@
 ﻿using System;
+using GlobalConstants;
 
 namespace MainLib
 {
@@ -108,7 +109,8 @@ namespace MainLib
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z) && W.Equals(other.W);
+            return Math.Abs(X - other.X) < NumberConstants.Epsilon && Math.Abs(Y - other.Y) < NumberConstants.Epsilon &&
+                   Math.Abs(Z - other.Z) < NumberConstants.Epsilon && Math.Abs(W - other.W) < NumberConstants.Epsilon;
         }
 
         public override bool Equals(object obj)

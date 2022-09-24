@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text;
+﻿using System.Text;
 
 namespace MainLib;
 
@@ -48,16 +46,16 @@ public class PPMCreator
 
     public string FileContent { get; }
 
-    public void WriteToFile()
+    public void WriteToFile(string fileName)
     {
-        File.WriteAllText("Test.ppm", FileContent);
+        File.WriteAllText(fileName + ".ppm", FileContent);
     }
 
     private static string ClampColor(Color c)
     {
-        var clampedRed = Math.Min(Math.Round(c.R * MAX_COLOR_VALUE), MAX_COLOR_VALUE);
-        var clampedGreen = Math.Min(Math.Round(c.G * MAX_COLOR_VALUE), MAX_COLOR_VALUE);
-        var clampedBlue = Math.Min(Math.Round(c.B * MAX_COLOR_VALUE), MAX_COLOR_VALUE);
+        var clampedRed = Math.Min(Math.Round((double)(c.R * MAX_COLOR_VALUE)), MAX_COLOR_VALUE);
+        var clampedGreen = Math.Min(Math.Round((double)(c.G * MAX_COLOR_VALUE)), MAX_COLOR_VALUE);
+        var clampedBlue = Math.Min(Math.Round((double)(c.B * MAX_COLOR_VALUE)), MAX_COLOR_VALUE);
         return $"{Math.Max(clampedRed, 0)} {Math.Max(clampedGreen, 0)} {Math.Max(clampedBlue, 0)}";
     }
 }
