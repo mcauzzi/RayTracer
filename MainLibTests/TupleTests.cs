@@ -151,5 +151,23 @@ namespace MainLibTests
             Assert.Equal(MathTuple.GetVector(-1, 2, -1), MathTuple.CrossProduct(a, b));
             Assert.Equal(MathTuple.GetVector(1, -2, 1), MathTuple.CrossProduct(b, a));
         }
+
+        [Fact]
+        public void VectorReflect45Deg()
+        {
+            var v = new Vector(1, -1, 0);
+            var n = new Vector(0, 1, 0);
+            var res = v.Reflect(n);
+            Assert.Equal(new Vector(1, 1, 0), res);
+        }
+
+        [Fact]
+        public void VectorReflectSlanted()
+        {
+            var v = new Vector(0, -1, 0);
+            var n = new Vector(Math.Sqrt(2) / 2, Math.Sqrt(2) / 2, 0);
+            var res = v.Reflect(n);
+            Assert.Equal(new Vector(1, 0, 0), res);
+        }
     }
 }

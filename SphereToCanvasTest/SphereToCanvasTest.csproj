@@ -10,7 +10,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Drawing\Drawing.csproj"/>
         <ProjectReference Include="..\FileManagement\FileManagement.csproj"/>
-        <ProjectReference Include="..\MainLib\MainLib.csproj"/>
+        <ProjectReference Include="..\MathLib\MathLib.csproj"/>
     </ItemGroup>
 
 </Project>

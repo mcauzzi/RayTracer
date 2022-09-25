@@ -19,4 +19,14 @@ public class Sphere
     public Point Origin { get; }
     public double Radius { get; }
     public Matrix Transformation { get; set; }
+
+    public MathTuple Normal(Point p)
+    {
+        var inverseTrans = Transformation.GetInverse();
+        var objPoint = inverseTrans * p;
+        var objNormal = objPoint - new Point(0, 0, 0);
+        var worldNormal = inverseTrans.Transpose() * objNormal;
+        worldNormal.W = 0;
+        return worldNormal.Normalize();
+    }
 }

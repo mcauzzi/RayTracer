@@ -1,7 +1,6 @@
 ﻿using MainLib;
-using Xunit;
 
-namespace MainLibTests;
+namespace FileTests;
 
 public class PPMTests
 {
@@ -11,9 +10,9 @@ public class PPMTests
         var c = new Canvas(5, 3);
         var ppm = new PPMCreator(c);
         var splittedString = ppm.FileContent.Split("\n");
-        Assert.Equal("P3\r", splittedString[0]);
-        Assert.Equal("5 3\r", splittedString[1]);
-        Assert.Equal("255\r", splittedString[2]);
+        Assert.Equal((string)"P3\r", (string)splittedString[0]);
+        Assert.Equal((string)"5 3\r", (string)splittedString[1]);
+        Assert.Equal((string)"255\r", (string)splittedString[2]);
     }
 
     [Fact]
@@ -25,9 +24,9 @@ public class PPMTests
         c.WritePixel(new Color(-0.5, 0, 1), 4, 2);
         var ppm = new PPMCreator(c);
         var splittedString = ppm.FileContent.Split("\n");
-        Assert.Equal("255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\r", splittedString[3]);
-        Assert.Equal("0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\r", splittedString[4]);
-        Assert.Equal("0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\r", splittedString[5]);
+        Assert.Equal((string)"255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\r", (string)splittedString[3]);
+        Assert.Equal((string)"0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\r", (string)splittedString[4]);
+        Assert.Equal((string)"0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\r", (string)splittedString[5]);
     }
 
     [Fact]
@@ -44,6 +43,6 @@ public class PPMTests
 
         var ppm = new PPMCreator(c);
         var splittedString = ppm.FileContent.Split("\n");
-        Assert.All(splittedString, x => Assert.True(x.Length < 70));
+        Assert.All<string>(splittedString, x => Assert.True(x.Length < 70));
     }
 }

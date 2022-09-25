@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\GlobalConstants\GlobalConstants.csproj"/>
+        <ProjectReference Include="..\MathLib\MathLib.csproj"/>
     </ItemGroup>
 
 </Project>

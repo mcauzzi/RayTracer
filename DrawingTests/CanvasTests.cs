@@ -1,7 +1,6 @@
 ﻿using MainLib;
-using Xunit;
 
-namespace MainLibTests;
+namespace DrawingTests;
 
 public class CanvasTests
 {

@@ -16,7 +16,7 @@ namespace MainLib
         public double X { get; private set; }
         public double Y { get; private set; }
         public double Z { get; private set; }
-        public double W { get; private set; }
+        public double W { get; internal set; }
 
         public static MathTuple GetPoint(double x, double y, double z)
         {

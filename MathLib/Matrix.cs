@@ -74,14 +74,10 @@ public class Matrix : IEquatable<Matrix>
         {
             return Mtx[0, 0] * Mtx[1, 1] - Mtx[0, 1] * Mtx[1, 0];
         }
-        else
-        {
-            var row = GetRow(0);
 
-            return row.Select((t, i) => t * GetCofactor(0, i)).Sum();
-        }
+        var row = GetRow(0);
 
-        return -1;
+        return row.Select((t, i) => t * GetCofactor(0, i)).Sum();
     }
 
     public Matrix GetInverse()
