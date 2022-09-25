@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MainLib;
 
-namespace MainLib;
+namespace Drawing;
 
 public class Ray
 {
-    public Ray(Point origin, Vector direction)
+    public Ray(Point origin, MathTuple direction)
     {
         Direction = direction;
         Origin = origin;
     }
 
     public Point Origin { get; }
-    public Vector Direction { get; }
+    public MathTuple Direction { get; }
 
     public Point Position(double distance)
     {

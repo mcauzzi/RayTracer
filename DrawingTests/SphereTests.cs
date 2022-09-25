@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Drawing;
 using MainLib;
-using Xunit;
 
-namespace MainLibTests;
+namespace DrawingTests;
 
 public class SphereTests
 {
@@ -91,5 +90,15 @@ public class SphereTests
         s.Transformation = Transforms.GetTranslationMatrix(0, 1, 0);
         var v = s.Normal(new Point(0, 1.70711, -0.70711));
         Assert.Equal(new Vector(0, 0.70711, -0.70711), v);
+    }
+
+    [Fact]
+    public void SphereMaterial()
+    {
+        var s = new Sphere();
+        var m = new Material();
+        m.Ambient = 1;
+        s.Material = m;
+        Assert.Equal(m, s.Material);
     }
 }

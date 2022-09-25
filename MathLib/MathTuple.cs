@@ -16,7 +16,7 @@ namespace MainLib
         public double X { get; private set; }
         public double Y { get; private set; }
         public double Z { get; private set; }
-        public double W { get; internal set; }
+        public double W { get; set; }
 
         public static MathTuple GetPoint(double x, double y, double z)
         {
@@ -52,6 +52,11 @@ namespace MainLib
         public override string ToString()
         {
             return $"{nameof(X)}: {X}, {nameof(Y)}: {Y}, {nameof(Z)}: {Z}, {nameof(W)}: {W}";
+        }
+
+        public MathTuple Reflect(MathTuple normal)
+        {
+            return this - normal * 2 * DotProduct(this, normal);
         }
 
         #region Operators

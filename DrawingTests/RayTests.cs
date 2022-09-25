@@ -1,7 +1,7 @@
-﻿using MainLib;
-using Xunit;
+﻿using Drawing;
+using MainLib;
 
-namespace MainLibTests;
+namespace DrawingTests;
 
 public class RayTests
 {

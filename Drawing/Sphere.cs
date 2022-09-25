@@ -1,4 +1,6 @@
-﻿namespace MainLib;
+﻿using MainLib;
+
+namespace Drawing;
 
 public class Sphere
 {
@@ -7,6 +9,7 @@ public class Sphere
         Radius = radius;
         Origin = origin;
         Transformation = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
+        Material = new Material();
     }
 
     public Sphere()
@@ -14,11 +17,13 @@ public class Sphere
         Radius = 1;
         Origin = new Point(0, 0, 0);
         Transformation = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
+        Material = new Material();
     }
 
     public Point Origin { get; }
     public double Radius { get; }
     public Matrix Transformation { get; set; }
+    public Material Material { get; set; }
 
     public MathTuple Normal(Point p)
     {
