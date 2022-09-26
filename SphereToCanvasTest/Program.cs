@@ -11,8 +11,13 @@ var wallSize = 7;
 var pixelSize = wallSize / (double)c.Height;
 var half = wallSize / (double)2;
 
-var s = new Sphere();
-s.Material.Color = new Color(1, 0.2, 1);
+var s = new Sphere
+{
+    Material =
+    {
+        Color = new Color(1, 0.2, 1)
+    }
+};
 var pl = new PointLight(new Color(1, 1, 1), new Point(-10, 10, -10));
 for (int i = 0; i < c.Height; i++)
 {

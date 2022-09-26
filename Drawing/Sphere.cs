@@ -2,7 +2,7 @@
 
 namespace Drawing;
 
-public class Sphere
+public class Sphere : IEquatable<Sphere>
 {
     public Sphere(Point origin, double radius)
     {
@@ -34,4 +34,46 @@ public class Sphere
         worldNormal.W = 0;
         return worldNormal.Normalize();
     }
+
+    #region Equality
+
+    public bool Equals(Sphere? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Origin.Equals(other.Origin) && Radius.Equals(other.Radius) &&
+               Transformation.Equals(other.Transformation) && Material.Equals(other.Material);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Sphere)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hashCode = Origin.GetHashCode();
+            hashCode = (hashCode * 397) ^ Radius.GetHashCode();
+            hashCode = (hashCode * 397) ^ Transformation.GetHashCode();
+            hashCode = (hashCode * 397) ^ Material.GetHashCode();
+            return hashCode;
+        }
+    }
+
+    public static bool operator ==(Sphere? left, Sphere? right)
+    {
+        return Equals(left, right);
+    }
+
+    public static bool operator !=(Sphere? left, Sphere? right)
+    {
+        return !Equals(left, right);
+    }
+
+    #endregion
 }
