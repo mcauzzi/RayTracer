@@ -45,8 +45,8 @@ public class Color : IEquatable<Color>
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return Math.Abs(R - other.R) < NumberConstants.Epsilon && Math.Abs(G - other.G) < NumberConstants.Epsilon &&
-               Math.Abs(B - other.B) < NumberConstants.Epsilon;
+        return Math.Abs(R - other.R) < Constants.Epsilon && Math.Abs(G - other.G) < Constants.Epsilon &&
+               Math.Abs(B - other.B) < Constants.Epsilon;
     }
 
     public override bool Equals(object obj)

@@ -1,45 +1,67 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 
+using System.Diagnostics;
 using Drawing;
 using MainLib;
 
-var c = new Canvas(900, 900);
-var startingPoint = new Point(0, 0, -10);
-var wallZ = 10;
-var wallSize = 7;
-var pixelSize = wallSize / (double)c.Height;
-var half = wallSize / (double)2;
-
-var s = new Sphere
+var floor = new Sphere
 {
-    Material =
+    Transformation = Transforms.GetScalingMatrix(10, 0.01, 10),
+    Material = new Material() { Color = new Color(1, 0.9, 0.9), Specular = 0 }
+};
+var leftWall = new Sphere
+{
+    Transformation = Transforms.GetTranslationMatrix(0, 0, 5) * Transforms.RotateY(-Math.PI / 4) *
+                     Transforms.RotateX(Math.PI / 2) * Transforms.GetScalingMatrix(10, 0.01, 10),
+    Material = floor.Material
+};
+var rightWall = new Sphere
+{
+    Transformation = Transforms.GetTranslationMatrix(0, 0, 5) * Transforms.RotateY(Math.PI / 4) *
+                     Transforms.RotateX(Math.PI / 2) * Transforms.GetScalingMatrix(10, 0.01, 10),
+    Material = floor.Material
+};
+var middle = new Sphere()
+{
+    Transformation = Transforms.GetTranslationMatrix(-0.5, 1, 0.5),
+    Material = new Material()
     {
-        Color = new Color(1, 0.2, 1)
+        Color = new Color(0.1, 1, 0.5),
+        Diffuse = 0.7,
+        Specular = 0.3
     }
 };
-var pl = new PointLight(new Color(1, 1, 1), new Point(-10, 10, -10));
-for (int i = 0; i < c.Height; i++)
+var right = new Sphere()
 {
-    var worldY = half - pixelSize * i;
-    for (int j = 0; j < c.Width; j++)
+    Transformation = Transforms.GetTranslationMatrix(1.5, 0.5, -0.5) * Transforms.GetScalingMatrix(0.5, 0.5, 0.5),
+    Material = new Material()
     {
-        var worldX = -half + pixelSize * j;
-        var wallTarget = new Point(worldX, worldY, wallZ);
-        var direction = (wallTarget - startingPoint).Normalize();
-        var ray = new Ray(startingPoint, new Vector(direction.X, direction.Y, direction.Z).Normalize());
-        //s.Transformation = Transforms.GetScalingMatrix(1.5, 1.5, 1.5);
-        var raySphere = ray.Intersects(s);
-        var hit = Intersection.Hit(raySphere);
-        if (hit != null)
-        {
-            var point = ray.Position(hit.Distance);
-            var normal = (hit.Obj as Sphere).Normal(point);
-            var eye = ray.Direction;
-            var color = s.Material.GetLighting(pl, point, eye, normal);
-            c.WritePixel(color, j, i);
-        }
+        Color = new Color(0.5, 1, 0.1),
+        Diffuse = 0.7,
+        Specular = 0.3
     }
-}
+};
+var left = new Sphere()
+{
+    Transformation = Transforms.GetTranslationMatrix(-1.5, 0.33, -0.75) * Transforms.GetScalingMatrix(0.33, 0.33, 0.33),
+    Material = new Material()
+    {
+        Color = new Color(1, 0.8, 0.1),
+        Diffuse = 0.7,
+        Specular = 0.3
+    }
+};
+var camera = new Camera(1280, 720, Math.PI / 3);
+camera.Transform = Transforms.ViewTransform(new Point(0, 1.5, -5), new Point(0, 1, 0), new Vector(0, 1, 0));
+var pl = new PointLight(new Color(1, 1, 1), new Point(-10, 10, -10));
+var pl2 = new PointLight(new Color(1, 1, 1), new Point(8, 10, 8));
+var world = new World(new List<PointLight>() { pl },
+    new List<Sphere>() { floor, leftWall, rightWall, right, middle, left });
 
-new PPMCreator(c).WriteToFile("Sphere");
+var st = new Stopwatch();
+st.Start();
+var canvas = camera.Render(world);
+st.Stop();
+Console.WriteLine($"Total Render Time{st.Elapsed}");
+new PPMCreator(canvas).WriteToFile("Sphere");

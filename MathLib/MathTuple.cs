@@ -114,8 +114,8 @@ namespace MainLib
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Math.Abs(X - other.X) < NumberConstants.Epsilon && Math.Abs(Y - other.Y) < NumberConstants.Epsilon &&
-                   Math.Abs(Z - other.Z) < NumberConstants.Epsilon && Math.Abs(W - other.W) < NumberConstants.Epsilon;
+            return Math.Abs(X - other.X) < Constants.Epsilon && Math.Abs(Y - other.Y) < Constants.Epsilon &&
+                   Math.Abs(Z - other.Z) < Constants.Epsilon && Math.Abs(W - other.W) < Constants.Epsilon;
         }
 
         public override bool Equals(object obj)

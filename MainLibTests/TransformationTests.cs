@@ -161,4 +161,39 @@ public class TransformationTests
         var transformed = (translation * scale * rot) * p;
         Assert.Equal(new Point(15, 0, 7), transformed);
     }
+
+    [Fact]
+    public void ViewTransformPositiveZ()
+    {
+        var from = new Point(0, 0, 0);
+        var to = new Point(0, 0, 1);
+        var up = new Vector(0, 1, 0);
+        Matrix t = Transforms.ViewTransform(from, to, up);
+        Assert.Equal(Transforms.GetScalingMatrix(-1, 1, -1), t);
+    }
+
+    [Fact]
+    public void ViewTransformMovesWorld()
+    {
+        var from = new Point(0, 0, 8);
+        var to = new Point(0, 0, 1);
+        var up = new Vector(0, 1, 0);
+        Matrix t = Transforms.ViewTransform(from, to, up);
+        Assert.Equal(Transforms.GetTranslationMatrix(0, 0, -8), t);
+    }
+
+    [Fact]
+    public void ViewTransformArbitrary()
+    {
+        var from = new Point(1, 3, 2);
+        var to = new Point(4, -2, 8);
+        var up = new Vector(1, 1, 0);
+        Matrix t = Transforms.ViewTransform(from, to, up);
+        Assert.Equal(
+            new Matrix(new[,]
+            {
+                { -0.50709, 0.50709, 0.67612, -2.36643 }, { 0.76772, 0.60609, 0.12122, -2.82843 },
+                { -0.35857, 0.59761, -0.71714, 0.00000 }, { 0.0000, 0.0, 0.0, 1 }
+            }), t);
+    }
 }

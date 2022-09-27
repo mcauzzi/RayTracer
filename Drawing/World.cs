@@ -21,8 +21,14 @@ public class World
         Spheres.Add(s2);
     }
 
+    public World(List<PointLight> lights, List<Sphere> spheres)
+    {
+        Lights = lights;
+        Spheres = spheres;
+    }
+
     public List<PointLight> Lights { get; }
-    public List<Sphere> Spheres { get; }
+    public List<Sphere> Spheres { get; set; }
 
     public List<Intersection> Intersect(Ray ray)
     {
@@ -41,7 +47,7 @@ public class World
         var s = comps.Obj as Sphere;
         var color = new Color(0, 0, 0);
         return Lights.Aggregate(color,
-            (current, _) => current + s.Material.GetLighting(Lights[0], comps.Point, comps.EyeV, comps.NormalV));
+            (total, light) => total + s.Material.GetLighting(light, comps.Point, comps.EyeV, comps.NormalV));
     }
 
     public Color ColorAt(Ray r)

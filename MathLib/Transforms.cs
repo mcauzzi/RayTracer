@@ -69,5 +69,23 @@ namespace MainLib
                 { 0, 0, 0, 1 }
             });
         }
+
+        public static Matrix ViewTransform(Point from, Point to, Vector up)
+        {
+            var forward = (to - from).Normalize();
+            var upn = up.Normalize();
+            var left = MathTuple.CrossProduct(forward, upn);
+            var trueUp = MathTuple.CrossProduct(left, forward);
+            var negForward = -forward;
+            var orientation = new Matrix(new double[,]
+            {
+                { left.X, left.Y, left.Z, 0 },
+                { trueUp.X, trueUp.Y, trueUp.Z, 0 },
+                { negForward.X, negForward.Y, negForward.Z, 0 },
+                { 0, 0, 0, 1 }
+            });
+            var negativeFrom = -from;
+            return orientation * GetTranslationMatrix(negativeFrom.X, negativeFrom.Y, negativeFrom.Z);
+        }
     }
 }

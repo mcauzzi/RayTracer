@@ -57,10 +57,10 @@ public class Material : IEquatable<Material>
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return Color.Equals(other.Color) && Math.Abs(Ambient - other.Ambient) < NumberConstants.Epsilon &&
-               Math.Abs(Diffuse - other.Diffuse) < NumberConstants.Epsilon &&
-               Math.Abs(Specular - other.Specular) < NumberConstants.Epsilon &&
-               Math.Abs(Shininess - other.Shininess) < NumberConstants.Epsilon;
+        return Color.Equals(other.Color) && Math.Abs(Ambient - other.Ambient) < Constants.Epsilon &&
+               Math.Abs(Diffuse - other.Diffuse) < Constants.Epsilon &&
+               Math.Abs(Specular - other.Specular) < Constants.Epsilon &&
+               Math.Abs(Shininess - other.Shininess) < Constants.Epsilon;
     }
 
     public override bool Equals(object? obj)

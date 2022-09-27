@@ -4,13 +4,13 @@ namespace Drawing;
 
 public class Ray
 {
-    public Ray(Point origin, MathTuple direction)
+    public Ray(MathTuple origin, MathTuple direction)
     {
         Direction = direction;
         Origin = origin;
     }
 
-    public Point Origin { get; }
+    public MathTuple Origin { get; }
     public MathTuple Direction { get; }
 
     public Point Position(double distance)

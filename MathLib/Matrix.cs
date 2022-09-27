@@ -167,7 +167,7 @@ public class Matrix : IEquatable<Matrix>
         {
             for (int j = 0; j < Mtx.GetLength(1); j++)
             {
-                if (Math.Abs(Mtx[i, j] - other.Mtx[i, j]) > NumberConstants.Epsilon)
+                if (Math.Abs(Mtx[i, j] - other.Mtx[i, j]) > Constants.Epsilon)
                 {
                     return false;
                 }
