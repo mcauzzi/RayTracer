@@ -93,4 +93,51 @@ public class WorldTests
 
         Assert.Equal(innerMat.Color, c);
     }
+
+    [Fact]
+    public void NoShadownNothingCollinearPointAndLight()
+    {
+        var w = new World();
+        var p = new Point(0, 10, 0);
+        Assert.False(w.IsShadowed(p));
+    }
+
+    [Fact]
+    public void NoShadownObjectBetweenPointAndLight()
+    {
+        var w = new World();
+        var p = new Point(10, -10, 10);
+        Assert.True(w.IsShadowed(p));
+    }
+
+    [Fact]
+    public void NoShadownObjectBehindLight()
+    {
+        var w = new World();
+        var p = new Point(-20, 20, -20);
+        Assert.False(w.IsShadowed(p));
+    }
+
+    [Fact]
+    public void NoShadownObjectBehindPoint()
+    {
+        var w = new World();
+        var p = new Point(-2, 2, -2);
+        Assert.False(w.IsShadowed(p));
+    }
+
+    [Fact]
+    public void ShadeHitWithShadow()
+    {
+        var l = new PointLight(new Color(1, 1, 1), new Point(0, 0, -10));
+        var s = new Sphere();
+        var s1 = new Sphere();
+        s1.Transformation *= Transforms.GetTranslationMatrix(0, 0, 10);
+        var w = new World(new List<PointLight>() { l }, new List<Sphere> { s1, s });
+        var r = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
+        var i = new Intersection(s1, 4);
+        var comps = i.PrepareComputation(r);
+        var c = w.ShadeHit(comps);
+        Assert.Equal(new Color(0.1, 0.1, 0.1), c);
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Drawing;
+using GlobalConstants;
 using MainLib;
 using Xunit;
 
@@ -107,5 +108,17 @@ public class IntersectionTests
         Assert.Equal(new Point(0, 0, 1), comps.Point);
         Assert.Equal(new Vector(0, 0, -1), comps.EyeV);
         Assert.Equal(new Vector(0, 0, -1), comps.NormalV);
+    }
+
+    [Fact]
+    public void HitShouldOffsetPoint()
+    {
+        var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var s = new Sphere();
+        s.Transformation *= Transforms.GetTranslationMatrix(0, 0, 1);
+        var i = new Intersection(s, 5);
+        var comps = i.PrepareComputation(r);
+        Assert.True(comps.OverPoint.Z < -(Constants.Epsilon / 2), $"{comps.OverPoint.Z}| {-(Constants.Epsilon / 2)}");
+        Assert.True(comps.Point.Z > comps.OverPoint.Z, $"{comps.Point.Z} | {comps.OverPoint.Z}");
     }
 }

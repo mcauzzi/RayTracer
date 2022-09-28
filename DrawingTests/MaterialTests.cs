@@ -63,4 +63,16 @@ public class MaterialTests
         var res = m.GetLighting(light, pos, eyeV, normalV);
         Assert.Equal(new Color(0.1, 0.1, 0.1), res);
     }
+
+    [Fact]
+    public void LightingShadowedSurface()
+    {
+        var m = new Material();
+        var pos = new Point(0, 0, 0);
+        var eyev = new Vector(0, 0, -1);
+        var normalV = new Vector(0, 0, -1);
+        var light = new PointLight(new Color(1, 1, 1), new Point(0, 0, -10));
+        var res = m.GetLighting(light, pos, eyev, normalV, true);
+        Assert.Equal(new Color(0.1, 0.1, 0.1), res);
+    }
 }

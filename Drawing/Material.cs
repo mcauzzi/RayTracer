@@ -28,7 +28,8 @@ public class Material : IEquatable<Material>
     public double Specular { get; set; }
     public double Shininess { get; }
 
-    public Color GetLighting(PointLight pl, Point position, MathTuple eyeDirection, MathTuple normalVector)
+    public Color GetLighting(PointLight pl, MathTuple position, MathTuple eyeDirection, MathTuple normalVector,
+        bool inShadow = false)
     {
         var effColor = Color * pl.Intensity;
         var lightV = (pl.Position - position).Normalize();
@@ -36,7 +37,7 @@ public class Material : IEquatable<Material>
         var lightDotNormal = MathTuple.DotProduct(lightV, normalVector);
         var diffuse = new Color(0, 0, 0);
         var specular = new Color(0, 0, 0);
-        if (lightDotNormal > 0)
+        if (lightDotNormal > 0 && !inShadow)
         {
             diffuse = effColor * Diffuse * lightDotNormal;
             var reflectV = -lightV.Reflect(normalVector);

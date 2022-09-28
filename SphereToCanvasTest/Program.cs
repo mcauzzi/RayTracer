@@ -54,14 +54,14 @@ var left = new Sphere()
 };
 var camera = new Camera(1280, 720, Math.PI / 3);
 camera.Transform = Transforms.ViewTransform(new Point(0, 1.5, -5), new Point(0, 1, 0), new Vector(0, 1, 0));
-var pl = new PointLight(new Color(1, 1, 1), new Point(-10, 10, -10));
-var pl2 = new PointLight(new Color(1, 1, 1), new Point(8, 10, 8));
-var world = new World(new List<PointLight>() { pl },
+var pl = new PointLight(new Color(1, 1, 1), new Point(-14, 10, -10));
+var pl2 = new PointLight(new Color(0.5, 0.5, 0.5), new Point(14, 2, -10));
+var world = new World(new List<PointLight>() { pl, pl2 },
     new List<Sphere>() { floor, leftWall, rightWall, right, middle, left });
 
 var st = new Stopwatch();
 st.Start();
 var canvas = camera.Render(world);
 st.Stop();
-Console.WriteLine($"Total Render Time{st.Elapsed}");
+Console.WriteLine($"Total Render Time {st.Elapsed}");
 new PPMCreator(canvas).WriteToFile("Sphere");

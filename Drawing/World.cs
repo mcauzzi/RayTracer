@@ -47,7 +47,8 @@ public class World
         var s = comps.Obj as Sphere;
         var color = new Color(0, 0, 0);
         return Lights.Aggregate(color,
-            (total, light) => total + s.Material.GetLighting(light, comps.Point, comps.EyeV, comps.NormalV));
+            (total, light) => total + s.Material.GetLighting(light, comps.OverPoint, comps.EyeV, comps.NormalV,
+                IsShadowed(comps.OverPoint, light)));
     }
 
     public Color ColorAt(Ray r)
@@ -63,5 +64,26 @@ public class World
             var comps = hits.PrepareComputation(r);
             return ShadeHit(comps);
         }
+    }
+
+    public bool IsShadowed(MathTuple point, PointLight? light = null)
+    {
+        if (light == null)
+        {
+            light = Lights[0];
+        }
+
+        var v = light.Position - point;
+        var distance = v.GetMagnitude();
+        var direction = v.Normalize();
+        var r = new Ray(point, direction);
+        var intersection = Intersect(r);
+        var h = Intersection.Hit(intersection);
+        if (h is not null && (h.Distance < distance))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -1,4 +1,5 @@
-﻿using MainLib;
+﻿using GlobalConstants;
+using MainLib;
 
 namespace Drawing;
 
@@ -27,6 +28,7 @@ public class Intersection
 
 
         var res = new Computation(Distance, Obj, point, eyeV, normalV, inside);
+        res.OverPoint = res.Point + (res.NormalV * Constants.Epsilon);
         return res;
     }
 
@@ -35,7 +37,7 @@ public class Intersection
     /// </summary>
     /// <param name="xs">Una lista d'intersezioni con un oggetto</param>
     /// <returns>Le distanze in cui il raggio interseca la sfera</returns>
-    public static Intersection Hit(List<Intersection> xs)
+    public static Intersection? Hit(List<Intersection> xs)
     {
         return xs.OrderBy(x => x.Distance).FirstOrDefault(x => x.Distance > 0);
     }
@@ -59,4 +61,5 @@ public class Computation
     public MathTuple EyeV { get; }
     public MathTuple NormalV { get; }
     public bool IsInside { get; }
+    public MathTuple OverPoint { get; set; }
 }
