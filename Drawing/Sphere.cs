@@ -2,37 +2,44 @@
 
 namespace Drawing;
 
-public class Sphere : IEquatable<Sphere>
+public class Sphere : Shape, IEquatable<Sphere>
 {
     public Sphere(Point origin, double radius)
     {
         Radius = radius;
         Origin = origin;
-        Transformation = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
-        Material = new Material();
     }
 
     public Sphere()
     {
         Radius = 1;
         Origin = new Point(0, 0, 0);
-        Transformation = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
-        Material = new Material();
     }
 
     public Point Origin { get; }
     public double Radius { get; }
-    public Matrix Transformation { get; set; }
-    public Material Material { get; set; }
 
-    public MathTuple Normal(Point p)
+    public override List<Intersection> LocalIntersect(Ray r)
     {
-        var inverseTrans = Transformation.GetInverse();
-        var objPoint = inverseTrans * p;
-        var objNormal = objPoint - new Point(0, 0, 0);
-        var worldNormal = inverseTrans.Transpose() * objNormal;
-        worldNormal.W = 0;
-        return worldNormal.Normalize();
+        var result = new List<Intersection>();
+        var sphereToRay = r.Origin - Origin;
+        var a = MathTuple.DotProduct(r.Direction, r.Direction);
+        var b = 2 * MathTuple.DotProduct(r.Direction, sphereToRay);
+        var c = MathTuple.DotProduct(sphereToRay, sphereToRay) - 1;
+        var discriminant = Math.Pow(b, 2) - 4 * a * c;
+        if (discriminant < 0)
+        {
+            return result;
+        }
+
+        result.Add(new Intersection(this, (-b - Math.Sqrt(discriminant)) / (2 * a)));
+        result.Add(new Intersection(this, (-b + Math.Sqrt(discriminant)) / (2 * a)));
+        return result;
+    }
+
+    public override MathTuple LocalNormal(MathTuple p)
+    {
+        return p - new Point(0, 0, 0);
     }
 
     #region Equality

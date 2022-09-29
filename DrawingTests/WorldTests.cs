@@ -18,8 +18,8 @@ public class WorldTests
             Transformation = Transforms.GetScalingMatrix(0.5, 0.5, 0.5)
         };
         var l = new PointLight(new Color(1, 1, 1), new Point(-10, 10, -10));
-        Assert.Equal(s1, w.Spheres.First());
-        Assert.Equal(s2, w.Spheres[1]);
+        Assert.Equal(s1, w.Shapes.First());
+        Assert.Equal(s2, w.Shapes[1]);
         Assert.Equal(l, w.Lights.First());
     }
 
@@ -41,7 +41,7 @@ public class WorldTests
     {
         var w = new World();
         var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
-        var s = w.Spheres.First();
+        var s = w.Shapes.First();
         var i = new Intersection(s, 4);
         var comps = i.PrepareComputation(r);
         Color c = w.ShadeHit(comps);
@@ -54,7 +54,7 @@ public class WorldTests
         var w = new World();
         w.Lights[0] = new PointLight(new Color(1, 1, 1), new Point(0, 0.25, 0));
         var r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
-        var s = w.Spheres[1];
+        var s = w.Shapes[1];
         var i = new Intersection(s, 0.5);
         var comps = i.PrepareComputation(r);
         Color c = w.ShadeHit(comps);
@@ -85,8 +85,8 @@ public class WorldTests
     public void RayIntersectionBehindRay()
     {
         var w = new World();
-        w.Spheres.First().Material.Ambient = 1;
-        var innerMat = w.Spheres[1].Material;
+        w.Shapes.First().Material.Ambient = 1;
+        var innerMat = w.Shapes[1].Material;
         innerMat.Ambient = 1;
         var r = new Ray(new Point(0, 0, 0.75), new Vector(0, 0, -1));
         var c = w.ColorAt(r);
@@ -133,7 +133,7 @@ public class WorldTests
         var s = new Sphere();
         var s1 = new Sphere();
         s1.Transformation *= Transforms.GetTranslationMatrix(0, 0, 10);
-        var w = new World(new List<PointLight>() { l }, new List<Sphere> { s1, s });
+        var w = new World(new List<PointLight>() { l }, new List<Shape> { s1, s });
         var r = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
         var i = new Intersection(s1, 4);
         var comps = i.PrepareComputation(r);

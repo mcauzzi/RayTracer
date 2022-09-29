@@ -5,19 +5,19 @@ namespace Drawing;
 
 public class Intersection
 {
-    public Intersection(object obj, double distance)
+    public Intersection(Shape obj, double distance)
     {
         Obj = obj;
         Distance = distance;
     }
 
     public double Distance { get; }
-    public object Obj { get; }
+    public Shape Obj { get; }
 
     public Computation PrepareComputation(Ray r)
     {
         var point = r.Position(Distance);
-        var normalV = (Obj as Sphere).Normal(point);
+        var normalV = Obj.Normal(point);
         var eyeV = -r.Direction;
         var inside = false;
         if (MathTuple.DotProduct(normalV, eyeV) < 0)
@@ -45,7 +45,7 @@ public class Intersection
 
 public class Computation
 {
-    public Computation(double distance, object obj, Point point, MathTuple eyeV, MathTuple normalV, bool inside)
+    public Computation(double distance, Shape obj, Point point, MathTuple eyeV, MathTuple normalV, bool inside)
     {
         Distance = distance;
         Obj = obj;
@@ -56,7 +56,7 @@ public class Computation
     }
 
     public double Distance { get; }
-    public object Obj { get; }
+    public Shape Obj { get; }
     public Point Point { get; }
     public MathTuple EyeV { get; }
     public MathTuple NormalV { get; }

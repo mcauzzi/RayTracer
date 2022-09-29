@@ -7,36 +7,36 @@ public class World
     public World()
     {
         Lights = new List<PointLight>();
-        Spheres = new List<Sphere>();
+        Shapes = new List<Shape>();
         Lights.Add(new PointLight(new Color(1, 1, 1), new Point(-10, 10, -10)));
         var s1 = new Sphere
         {
             Material = new Material() { Color = new Color(0.8, 1.0, 0.6), Diffuse = 0.7, Specular = 0.2 }
         };
-        Spheres.Add(s1);
+        Shapes.Add(s1);
         var s2 = new Sphere
         {
             Transformation = Transforms.GetScalingMatrix(0.5, 0.5, 0.5)
         };
-        Spheres.Add(s2);
+        Shapes.Add(s2);
     }
 
-    public World(List<PointLight> lights, List<Sphere> spheres)
+    public World(List<PointLight> lights, List<Shape> shapes)
     {
         Lights = lights;
-        Spheres = spheres;
+        Shapes = shapes;
     }
 
     public List<PointLight> Lights { get; }
-    public List<Sphere> Spheres { get; set; }
+    public List<Shape> Shapes { get; set; }
 
     public List<Intersection> Intersect(Ray ray)
     {
         var intersection = new List<Intersection>();
 
-        foreach (var sphere in Spheres)
+        foreach (var shape in Shapes)
         {
-            intersection.AddRange(ray.Intersects(sphere));
+            intersection.AddRange(shape.Intersect(ray));
         }
 
         return intersection.OrderBy(x => x.Distance).ToList();
@@ -44,7 +44,7 @@ public class World
 
     public Color ShadeHit(Computation comps)
     {
-        var s = comps.Obj as Sphere;
+        var s = comps.Obj;
         var color = new Color(0, 0, 0);
         return Lights.Aggregate(color,
             (total, light) => total + s.Material.GetLighting(light, comps.OverPoint, comps.EyeV, comps.NormalV,

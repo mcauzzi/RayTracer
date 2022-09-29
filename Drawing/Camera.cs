@@ -60,7 +60,9 @@ public class Camera
     {
         var res = new Canvas(HSize, VSize);
         var tasks = new List<Thread>();
-        var rowsPerThread = VSize / Constants.NUMBER_OF_THREADS == 0 ? VSize : VSize / Constants.NUMBER_OF_THREADS;
+        var rowsPerThread = VSize / Constants.NUMBER_OF_THREADS == 0
+            ? VSize
+            : (int)Math.Ceiling(VSize / (double)Constants.NUMBER_OF_THREADS);
         var threads = rowsPerThread == VSize ? 1 : Constants.NUMBER_OF_THREADS;
         Console.WriteLine($"rowsPerThread={rowsPerThread}, threads={threads}");
         for (int thr = 0; thr < threads; thr++)
@@ -68,7 +70,7 @@ public class Camera
             var thrEff = thr;
             var thread = new Thread(() =>
             {
-                for (int i = rowsPerThread * thrEff; i < rowsPerThread * (thrEff + 1); i++)
+                for (int i = rowsPerThread * thrEff; i < rowsPerThread * (thrEff + 1) && i < VSize; i++)
                 {
                     for (int j = 0; j < HSize; j++)
                     {

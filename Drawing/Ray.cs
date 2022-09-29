@@ -24,24 +24,9 @@ public class Ray
     /// </summary>
     /// <param name="s">La sfera con cui verficare le intersezioni</param>
     /// <returns>Le distanze in cui il raggio interseca la sfera</returns>
-    public List<Intersection>
-        Intersects(Sphere s)
+    public List<Intersection> Intersects(Sphere s)
     {
-        var result = new List<Intersection>();
-        var transformedRay = Transform(s.Transformation.GetInverse());
-        var sphereToRay = transformedRay.Origin - s.Origin;
-        var a = MathTuple.DotProduct(transformedRay.Direction, transformedRay.Direction);
-        var b = 2 * MathTuple.DotProduct(transformedRay.Direction, sphereToRay);
-        var c = MathTuple.DotProduct(sphereToRay, sphereToRay) - 1;
-        var discriminant = Math.Pow(b, 2) - 4 * a * c;
-        if (discriminant < 0)
-        {
-            return result;
-        }
-
-        result.Add(new Intersection(s, (-b - Math.Sqrt(discriminant)) / (2 * a)));
-        result.Add(new Intersection(s, (-b + Math.Sqrt(discriminant)) / (2 * a)));
-        return result;
+        return s.Intersect(this);
     }
 
     public Ray Transform(Matrix m)
