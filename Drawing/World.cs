@@ -8,7 +8,7 @@ public class World
     {
         Lights = new List<PointLight>();
         Shapes = new List<Shape>();
-        Lights.Add(new PointLight(new Color(1, 1, 1), new Point(-10, 10, -10)));
+        Lights.Add(new PointLight(Color.White, new Point(-10, 10, -10)));
         var s1 = new Sphere
         {
             Material = new Material() { Color = new Color(0.8, 1.0, 0.6), Diffuse = 0.7, Specular = 0.2 }
@@ -28,7 +28,7 @@ public class World
     }
 
     public List<PointLight> Lights { get; }
-    public List<Shape> Shapes { get; set; }
+    public List<Shape>      Shapes { get; set; }
 
     public List<Intersection> Intersect(Ray ray)
     {
@@ -39,25 +39,27 @@ public class World
             intersection.AddRange(shape.Intersect(ray));
         }
 
-        return intersection.OrderBy(x => x.Distance).ToList();
+        return intersection.OrderBy(x => x.Distance)
+            .ToList();
     }
 
     public Color ShadeHit(Computation comps)
     {
-        var s = comps.Obj;
-        var color = new Color(0, 0, 0);
+        var s     = comps.Obj;
+        var color = Color.Black;
         return Lights.Aggregate(color,
-            (total, light) => total + s.Material.GetLighting(light, comps.OverPoint, comps.EyeV, comps.NormalV,
+            (total, light) => total + s.Material.GetLighting(light, comps.Obj, comps.OverPoint, comps.EyeV,
+                comps.NormalV,
                 IsShadowed(comps.OverPoint, light)));
     }
 
     public Color ColorAt(Ray r)
     {
         var inter = Intersect(r);
-        var hits = Intersection.Hit(inter);
+        var hits  = Intersection.Hit(inter);
         if (hits == null)
         {
-            return new Color(0, 0, 0);
+            return Color.Black;
         }
         else
         {
@@ -73,12 +75,12 @@ public class World
             light = Lights[0];
         }
 
-        var v = light.Position - point;
-        var distance = v.GetMagnitude();
-        var direction = v.Normalize();
-        var r = new Ray(point, direction);
+        var v            = light.Position - point;
+        var distance     = v.GetMagnitude();
+        var direction    = v.Normalize();
+        var r            = new Ray(point, direction);
         var intersection = Intersect(r);
-        var h = Intersection.Hit(intersection);
+        var h            = Intersection.Hit(intersection);
         if (h is not null && (h.Distance < distance))
         {
             return true;

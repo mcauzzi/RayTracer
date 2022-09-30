@@ -1,4 +1,6 @@
-﻿using GlobalConstants;
+﻿using Drawing;
+using Drawing.Patterns;
+using GlobalConstants;
 
 namespace MainLib;
 
@@ -7,40 +9,44 @@ public class Material : IEquatable<Material>
     public Material(double shininess, double specular, double diffuse, double ambient, Color color)
     {
         Shininess = shininess;
-        Specular = specular;
-        Diffuse = diffuse;
-        Ambient = ambient;
-        Color = color;
+        Specular  = specular;
+        Diffuse   = diffuse;
+        Ambient   = ambient;
+        Color     = color;
     }
 
     public Material()
     {
-        Color = new Color(1, 1, 1);
-        Ambient = 0.1;
-        Diffuse = 0.9;
-        Specular = 0.9;
+        Color     = Color.White;
+        Ambient   = 0.1;
+        Diffuse   = 0.9;
+        Specular  = 0.9;
         Shininess = 200;
     }
 
-    public Color Color { get; set; }
-    public double Ambient { get; set; }
-    public double Diffuse { get; set; }
-    public double Specular { get; set; }
+    public Color  Color     { get; init; }
+    public double Ambient   { get; set; }
+    public double Diffuse   { get; init; }
+    public double Specular  { get; init; }
     public double Shininess { get; }
 
-    public Color GetLighting(PointLight pl, MathTuple position, MathTuple eyeDirection, MathTuple normalVector,
+    public Pattern? Pattern { get; set; }
+
+    public Color GetLighting(PointLight pl, Shape shape, MathTuple position, MathTuple eyeDirection,
+        MathTuple normalVector,
         bool inShadow = false)
     {
-        var effColor = Color * pl.Intensity;
-        var lightV = (pl.Position - position).Normalize();
-        var ambient = effColor * Ambient;
+        var color          = Pattern != null ? Pattern.ColorAtObject(shape, position) : Color;
+        var effColor       = color * pl.Intensity;
+        var lightV         = (pl.Position - position).Normalize();
+        var ambient        = effColor * Ambient;
         var lightDotNormal = MathTuple.DotProduct(lightV, normalVector);
-        var diffuse = new Color(0, 0, 0);
-        var specular = new Color(0, 0, 0);
+        var diffuse        = Color.Black;
+        var specular       = Color.Black;
         if (lightDotNormal > 0 && !inShadow)
         {
             diffuse = effColor * Diffuse * lightDotNormal;
-            var reflectV = -lightV.Reflect(normalVector);
+            var reflectV      = -lightV.Reflect(normalVector);
             var reflectDotEye = MathTuple.DotProduct(reflectV, eyeDirection);
             if (reflectDotEye > 0)
             {

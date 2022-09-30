@@ -17,34 +17,38 @@ public class WorldTests
         {
             Transformation = Transforms.GetScalingMatrix(0.5, 0.5, 0.5)
         };
-        var l = new PointLight(new Color(1, 1, 1), new Point(-10, 10, -10));
+        var l = new PointLight(Color.White, new Point(-10, 10, -10));
         Assert.Equal(s1, w.Shapes.First());
         Assert.Equal(s2, w.Shapes[1]);
-        Assert.Equal(l, w.Lights.First());
+        Assert.Equal(l,  w.Lights.First());
     }
 
     [Fact]
     public void IntesectWorld()
     {
-        var w = new World();
-        var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var                w  = new World();
+        var                r  = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
         List<Intersection> wr = w.Intersect(r);
         Assert.Equal(4, wr.Count);
-        Assert.Equal(4, wr[0].Distance);
-        Assert.Equal(4.5, wr[1].Distance);
-        Assert.Equal(5.5, wr[2].Distance);
-        Assert.Equal(6, wr[3].Distance);
+        Assert.Equal(4, wr[0]
+            .Distance);
+        Assert.Equal(4.5, wr[1]
+            .Distance);
+        Assert.Equal(5.5, wr[2]
+            .Distance);
+        Assert.Equal(6, wr[3]
+            .Distance);
     }
 
     [Fact]
     public void IntersectionShade()
     {
-        var w = new World();
-        var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
-        var s = w.Shapes.First();
-        var i = new Intersection(s, 4);
-        var comps = i.PrepareComputation(r);
-        Color c = w.ShadeHit(comps);
+        var   w     = new World();
+        var   r     = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var   s     = w.Shapes.First();
+        var   i     = new Intersection(s, 4);
+        var   comps = i.PrepareComputation(r);
+        Color c     = w.ShadeHit(comps);
         Assert.Equal(new Color(0.38066, 0.47583, 0.2855), c);
     }
 
@@ -52,12 +56,12 @@ public class WorldTests
     public void IntersectionShadeInside()
     {
         var w = new World();
-        w.Lights[0] = new PointLight(new Color(1, 1, 1), new Point(0, 0.25, 0));
-        var r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
-        var s = w.Shapes[1];
-        var i = new Intersection(s, 0.5);
-        var comps = i.PrepareComputation(r);
-        Color c = w.ShadeHit(comps);
+        w.Lights[0] = new PointLight(Color.White, new Point(0, 0.25, 0));
+        var   r     = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+        var   s     = w.Shapes[1];
+        var   i     = new Intersection(s, 0.5);
+        var   comps = i.PrepareComputation(r);
+        Color c     = w.ShadeHit(comps);
         Assert.Equal(new Color(0.90498, 0.90498, 0.90498), c);
     }
 
@@ -68,7 +72,7 @@ public class WorldTests
         var r = new Ray(new Point(0, 0, -5), new Vector(0, 1, 0));
         var c = w.ColorAt(r);
 
-        Assert.Equal(new Color(0, 0, 0), c);
+        Assert.Equal(Color.Black, c);
     }
 
     [Fact]
@@ -85,8 +89,10 @@ public class WorldTests
     public void RayIntersectionBehindRay()
     {
         var w = new World();
-        w.Shapes.First().Material.Ambient = 1;
-        var innerMat = w.Shapes[1].Material;
+        w.Shapes.First()
+            .Material.Ambient = 1;
+        var innerMat = w.Shapes[1]
+            .Material;
         innerMat.Ambient = 1;
         var r = new Ray(new Point(0, 0, 0.75), new Vector(0, 0, -1));
         var c = w.ColorAt(r);
@@ -129,15 +135,15 @@ public class WorldTests
     [Fact]
     public void ShadeHitWithShadow()
     {
-        var l = new PointLight(new Color(1, 1, 1), new Point(0, 0, -10));
-        var s = new Sphere();
+        var l  = new PointLight(Color.White, new Point(0, 0, -10));
+        var s  = new Sphere();
         var s1 = new Sphere();
         s1.Transformation *= Transforms.GetTranslationMatrix(0, 0, 10);
-        var w = new World(new List<PointLight>() { l }, new List<Shape> { s1, s });
-        var r = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
-        var i = new Intersection(s1, 4);
+        var w     = new World(new List<PointLight>() { l }, new List<Shape> { s1, s });
+        var r     = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
+        var i     = new Intersection(s1, 4);
         var comps = i.PrepareComputation(r);
-        var c = w.ShadeHit(comps);
+        var c     = w.ShadeHit(comps);
         Assert.Equal(new Color(0.1, 0.1, 0.1), c);
     }
 }
