@@ -17,18 +17,20 @@ public class Material : IEquatable<Material>
 
     public Material()
     {
-        Color     = Color.White;
-        Ambient   = 0.1;
-        Diffuse   = 0.9;
-        Specular  = 0.9;
-        Shininess = 200;
+        Color      = Color.White;
+        Ambient    = 0.1;
+        Diffuse    = 0.9;
+        Specular   = 0.9;
+        Shininess  = 200;
+        Reflective = 0;
     }
 
-    public Color  Color     { get; init; }
-    public double Ambient   { get; set; }
-    public double Diffuse   { get; init; }
-    public double Specular  { get; init; }
-    public double Shininess { get; }
+    public Color  Color      { get; set; }
+    public double Ambient    { get; set; }
+    public double Diffuse    { get; set; }
+    public double Specular   { get; set; }
+    public double Shininess  { get; set; }
+    public double Reflective { get; set; }
 
     public Pattern? Pattern { get; set; }
 

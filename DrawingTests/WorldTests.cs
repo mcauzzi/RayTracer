@@ -146,4 +146,84 @@ public class WorldTests
         var c     = w.ShadeHit(comps);
         Assert.Equal(new Color(0.1, 0.1, 0.1), c);
     }
+
+    [Fact]
+    public void ReflectiveMaterial()
+    {
+        var w = new World();
+        var p = new Plane()
+        {
+            Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 0.5 }
+        };
+        w.Shapes.Add(p);
+        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var i     = new Intersection(p, Math.Sqrt(2));
+        var comps = i.PrepareComputation(r);
+        var color = w.ReflectedColor(comps);
+        Assert.Equal(new Color(0.19033, 0.23791, 0.14274), color);
+    }
+
+    [Fact]
+    public void NonReflectiveMaterial()
+    {
+        var w = new World();
+        var p = w.Shapes[1];
+        var r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+        p.Material.Ambient = 1;
+        var i     = new Intersection(p, 1);
+        var comps = i.PrepareComputation(r);
+        var color = w.ReflectedColor(comps);
+        Assert.Equal(new Color(0, 0, 0), color);
+    }
+
+    [Fact]
+    public void ShadeHitReflective()
+    {
+        var w = new World();
+        var p = new Plane()
+        {
+            Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 0.5 }
+        };
+        w.Shapes.Add(p);
+        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var i     = new Intersection(p, Math.Sqrt(2));
+        var comps = i.PrepareComputation(r);
+        var color = w.ShadeHit(comps);
+        Assert.Equal(new Color(0.87675, 0.92434, 0.82917), color);
+    }
+
+    [Fact]
+    public void ShouldTerminate()
+    {
+        var light = new PointLight(Color.White, new Point(0, 0, 0));
+        var p = new Plane()
+        {
+            Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 1 }
+        };
+
+        var p1 = new Plane()
+            { Transformation = Transforms.GetTranslationMatrix(0, 1, 0), Material = new Material() { Reflective = 1 } };
+
+        var r     = new Ray(new Point(0, 0, 0), new Vector(0, -1, 0));
+        var w     = new World(new List<PointLight>() { light }, new List<Shape>() { p, p1 });
+        var color = w.ColorAt(r);
+        var res   = Record.Exception(() => w.ColorAt(r));
+        Assert.Null(res);
+    }
+
+    [Fact]
+    public void ReflectedColorMaximumRecursionDepth()
+    {
+        var w = new World();
+        var p = new Plane()
+        {
+            Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 0.5 }
+        };
+        w.Shapes.Add(p);
+        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var i     = new Intersection(p, Math.Sqrt(2));
+        var comps = i.PrepareComputation(r);
+        var color = w.ReflectedColor(comps, 0);
+        Assert.Equal(Color.Black, color);
+    }
 }

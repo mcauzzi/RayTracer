@@ -91,4 +91,11 @@ public class MaterialTests
         Assert.Equal(Color.White, c1);
         Assert.Equal(Color.Black, c2);
     }
+
+    [Fact]
+    public void DefaultReflectivity()
+    {
+        var m = new Material();
+        Assert.Equal(0, m.Reflective);
+    }
 }

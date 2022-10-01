@@ -8,7 +8,7 @@ public class SphereTests
     [Fact]
     public void DefaultTransformation()
     {
-        var s = new Sphere();
+        var s        = new Sphere();
         var identity = new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
         Assert.Equal(identity, s.Transformation);
     }
@@ -16,7 +16,7 @@ public class SphereTests
     [Fact]
     public void SetTransformation()
     {
-        var s = new Sphere();
+        var s                 = new Sphere();
         var translationMatrix = Transforms.GetTranslationMatrix(2, 3, 4);
         s.Transformation = translationMatrix;
         Assert.Equal(translationMatrix, s.Transformation);
@@ -30,8 +30,10 @@ public class SphereTests
         s.Transformation = Transforms.GetScalingMatrix(2, 2, 2);
         var rs = r.Intersects(s);
         Assert.Equal(2, rs.Count);
-        Assert.Equal(3, rs[0].Distance);
-        Assert.Equal(7, rs[1].Distance);
+        Assert.Equal(3, rs[0]
+            .Distance);
+        Assert.Equal(7, rs[1]
+            .Distance);
     }
 
     [Fact]
@@ -96,8 +98,7 @@ public class SphereTests
     public void SphereMaterial()
     {
         var s = new Sphere();
-        var m = new Material();
-        m.Ambient = 1;
+        var m = new Material() { Ambient = 1 };
         s.Material = m;
         Assert.Equal(m, s.Material);
     }

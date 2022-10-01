@@ -7,27 +7,27 @@ public class Intersection
 {
     public Intersection(Shape obj, double distance)
     {
-        Obj = obj;
+        Obj      = obj;
         Distance = distance;
     }
 
     public double Distance { get; }
-    public Shape Obj { get; }
+    public Shape  Obj      { get; }
 
     public Computation PrepareComputation(Ray r)
     {
-        var point = r.Position(Distance);
+        var point   = r.Position(Distance);
         var normalV = Obj.Normal(point);
-        var eyeV = -r.Direction;
-        var inside = false;
+        var eyeV    = -r.Direction;
+        var inside  = false;
         if (MathTuple.DotProduct(normalV, eyeV) < 0)
         {
             normalV = -normalV;
-            inside = true;
+            inside  = true;
         }
 
-
         var res = new Computation(Distance, Obj, point, eyeV, normalV, inside);
+        res.ReflectV  = r.Direction.Reflect(res.NormalV);
         res.OverPoint = res.Point + (res.NormalV * Constants.Epsilon);
         return res;
     }
@@ -39,7 +39,8 @@ public class Intersection
     /// <returns>Le distanze in cui il raggio interseca la sfera</returns>
     public static Intersection? Hit(List<Intersection> xs)
     {
-        return xs.OrderBy(x => x.Distance).FirstOrDefault(x => x.Distance > 0);
+        return xs.OrderBy(x => x.Distance)
+            .FirstOrDefault(x => x.Distance > 0);
     }
 }
 
@@ -48,18 +49,19 @@ public class Computation
     public Computation(double distance, Shape obj, Point point, MathTuple eyeV, MathTuple normalV, bool inside)
     {
         Distance = distance;
-        Obj = obj;
-        Point = point;
-        EyeV = eyeV;
-        NormalV = normalV;
+        Obj      = obj;
+        Point    = point;
+        EyeV     = eyeV;
+        NormalV  = normalV;
         IsInside = inside;
     }
 
-    public double Distance { get; }
-    public Shape Obj { get; }
-    public Point Point { get; }
-    public MathTuple EyeV { get; }
-    public MathTuple NormalV { get; }
-    public bool IsInside { get; }
+    public double    Distance  { get; }
+    public Shape     Obj       { get; }
+    public Point     Point     { get; }
+    public MathTuple EyeV      { get; }
+    public MathTuple NormalV   { get; }
+    public bool      IsInside  { get; }
     public MathTuple OverPoint { get; set; }
+    public MathTuple ReflectV  { get; set; }
 }

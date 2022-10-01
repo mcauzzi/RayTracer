@@ -43,17 +43,19 @@ public class World
             .ToList();
     }
 
-    public Color ShadeHit(Computation comps)
+    public Color ShadeHit(Computation comps, int remaining = 5)
     {
         var s     = comps.Obj;
         var color = Color.Black;
-        return Lights.Aggregate(color,
+        var surface = Lights.Aggregate(color,
             (total, light) => total + s.Material.GetLighting(light, comps.Obj, comps.OverPoint, comps.EyeV,
                 comps.NormalV,
                 IsShadowed(comps.OverPoint, light)));
+        var reflected = ReflectedColor(comps, remaining);
+        return surface + reflected;
     }
 
-    public Color ColorAt(Ray r)
+    public Color ColorAt(Ray r, int remaining = 5)
     {
         var inter = Intersect(r);
         var hits  = Intersection.Hit(inter);
@@ -64,7 +66,7 @@ public class World
         else
         {
             var comps = hits.PrepareComputation(r);
-            return ShadeHit(comps);
+            return ShadeHit(comps, remaining);
         }
     }
 
@@ -87,5 +89,16 @@ public class World
         }
 
         return false;
+    }
+
+    public Color ReflectedColor(Computation comps, int remaining = 5)
+    {
+        if (comps.Obj.Material.Reflective == 0 || remaining == 0)
+        {
+            return Color.Black;
+        }
+
+        var reflectRay = new Ray(comps.OverPoint, comps.ReflectV);
+        return ColorAt(reflectRay, remaining - 1) * comps.Obj.Material.Reflective;
     }
 }
