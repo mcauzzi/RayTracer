@@ -9,12 +9,15 @@ using MainLib;
 var floor = new Plane
 {
     Material = new Material()
-        { Color = new Color(1, 0.9, 0.9), Specular = 0, Pattern = new CheckerPattern(Color.Green, Color.Red) }
+    {
+        Color   = new Color(1, 0.9, 0.9), Specular                                        = 0,
+        Pattern = new RingPattern(new Color(0, 0.5, 0), new Color(0.5, 0, 0)), Reflective = 0.3
+    }
 };
 var ceiling = new Plane
 {
     Material = new Material()
-        { Color = new Color(0.8, 0.3, 0.4), Specular = 0, Pattern = new CheckerPattern(Color.Green, Color.Red) },
+        { Color = new Color(0.8, 0.3, 0.4), Specular = 0, Pattern = new StripePattern(Color.Green, Color.Red) },
     Transformation = Transforms.GetTranslationMatrix(0, 11, 0)
 };
 var rightWall = new Plane
@@ -38,10 +41,11 @@ var middle = new Sphere()
     Transformation = Transforms.GetTranslationMatrix(-0.5, 5, -2.5),
     Material = new Material()
     {
-        Color    = new Color(0.1, 1, 0.5),
-        Diffuse  = 0.7,
-        Specular = 0.6,
-        Pattern  = new RandomPattern()
+        Color      = new Color(0.1, 1, 0.5),
+        Diffuse    = 0.7,
+        Specular   = 0.6,
+        Pattern    = new GradientPattern(Color.Green, Color.Blue),
+        Reflective = 0.3
     }
 };
 var right = new Sphere()
@@ -68,7 +72,7 @@ var left = new Sphere()
 };
 var camera = new Camera(800, 600, Math.PI / 3)
 {
-    Transform = Transforms.ViewTransform(new Point(0, 5, -10), new Point(0, 5, 0), new Vector(0, 1, 0))
+    Transform = Transforms.ViewTransform(new Point(0, 8, -6), new Point(0, 0, 0), new Vector(0, 1, 0))
 };
 var pl  = new PointLight(new Color(0.3, 0.3, 0.3), new Point(3, 6, -8));
 var pl2 = new PointLight(Color.White,              new Point(0, 6, 4));

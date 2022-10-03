@@ -52,7 +52,8 @@ public class World
                 comps.NormalV,
                 IsShadowed(comps.OverPoint, light)));
         var reflected = ReflectedColor(comps, remaining);
-        return surface + reflected;
+        var refracted = RefractedColor(comps, remaining);
+        return surface + reflected + refracted;
     }
 
     public Color ColorAt(Ray r, int remaining = 5)
@@ -100,5 +101,21 @@ public class World
 
         var reflectRay = new Ray(comps.OverPoint, comps.ReflectV);
         return ColorAt(reflectRay, remaining - 1) * comps.Obj.Material.Reflective;
+    }
+
+    public Color RefractedColor(Computation comps, int remaining)
+    {
+        var nRatio = comps.N1 / comps.N2;
+        var cosI   = MathTuple.DotProduct(comps.EyeV, comps.NormalV);
+        var sin2T  = Math.Pow(nRatio, 2) * (1 - Math.Pow(cosI, 2));
+        if (comps.Obj.Material.Transparency == 0 || remaining == 0 || sin2T > 1)
+        {
+            return Color.Black;
+        }
+
+        var cosT       = Math.Sqrt(1 - sin2T);
+        var direction  = comps.NormalV * (nRatio * cosI - cosT) - comps.EyeV * nRatio;
+        var refractRay = new Ray(comps.UnderPoint, direction);
+        return ColorAt(refractRay, remaining - 1) * comps.Obj.Material.Transparency;
     }
 }

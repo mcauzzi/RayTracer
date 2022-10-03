@@ -14,7 +14,7 @@ public class Intersection
     public double Distance { get; }
     public Shape  Obj      { get; }
 
-    public Computation PrepareComputation(Ray r)
+    public Computation PrepareComputation(Ray r, List<Intersection>? intersections = null)
     {
         var point   = r.Position(Distance);
         var normalV = Obj.Normal(point);
@@ -27,9 +27,69 @@ public class Intersection
         }
 
         var res = new Computation(Distance, Obj, point, eyeV, normalV, inside);
-        res.ReflectV  = r.Direction.Reflect(res.NormalV);
-        res.OverPoint = res.Point + (res.NormalV * Constants.Epsilon);
+        if (intersections != null)
+        {
+            CalculateN1N2(intersections, res);
+        }
+
+        res.ReflectV   = r.Direction.Reflect(res.NormalV);
+        res.OverPoint  = res.Point + (res.NormalV * Constants.Epsilon);
+        res.UnderPoint = res.Point - (res.NormalV * Constants.Epsilon);
         return res;
+    }
+
+    private void CalculateN1N2(List<Intersection>? intersections, Computation res)
+    {
+        var containers = new List<Shape>();
+        foreach (var i in intersections)
+        {
+            ComputeN1(res, i, containers);
+
+            if (containers.Contains(i.Obj))
+            {
+                containers.Remove(i.Obj);
+            }
+            else
+            {
+                containers.Add(i.Obj);
+            }
+
+            if (i != this) continue;
+            ComputeN2(res, containers);
+
+            return;
+        }
+    }
+
+    private void ComputeN2(Computation res, List<Shape> containers)
+    {
+        if (!containers.Any())
+        {
+            res.N2 = 1.0;
+        }
+        else
+        {
+            res.N2 = containers.TakeLast(1)
+                .First()
+                .Material.RefractiveIndex;
+        }
+    }
+
+    private void ComputeN1(Computation res, Intersection i, List<Shape> containers)
+    {
+        if (i == this)
+        {
+            if (!containers.Any())
+            {
+                res.N1 = 1.0;
+            }
+            else
+            {
+                res.N1 = containers.TakeLast(1)
+                    .First()
+                    .Material.RefractiveIndex;
+            }
+        }
     }
 
     /// <summary>
@@ -56,12 +116,15 @@ public class Computation
         IsInside = inside;
     }
 
-    public double    Distance  { get; }
-    public Shape     Obj       { get; }
-    public Point     Point     { get; }
-    public MathTuple EyeV      { get; }
-    public MathTuple NormalV   { get; }
-    public bool      IsInside  { get; }
-    public MathTuple OverPoint { get; set; }
-    public MathTuple ReflectV  { get; set; }
+    public double    Distance   { get; }
+    public Shape     Obj        { get; }
+    public Point     Point      { get; }
+    public MathTuple EyeV       { get; }
+    public MathTuple NormalV    { get; }
+    public bool      IsInside   { get; }
+    public MathTuple OverPoint  { get; set; }
+    public MathTuple ReflectV   { get; set; }
+    public double    N1         { get; set; }
+    public double    N2         { get; set; }
+    public MathTuple UnderPoint { get; set; }
 }

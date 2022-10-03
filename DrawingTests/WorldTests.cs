@@ -1,4 +1,5 @@
 ﻿using Drawing;
+using Drawing.Patterns;
 using MainLib;
 
 namespace DrawingTests;
@@ -225,5 +226,66 @@ public class WorldTests
         var comps = i.PrepareComputation(r);
         var color = w.ReflectedColor(comps, 0);
         Assert.Equal(Color.Black, color);
+    }
+
+    [Fact]
+    public void RefractedColorOpaqueSurface()
+    {
+        var w     = new World();
+        var shape = w.Shapes[0];
+        var r     = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var xs    = new List<Intersection>() { new(shape, 4), new(shape, 6) };
+        var comps = xs[0]
+            .PrepareComputation(r, xs);
+        var c = w.RefractedColor(comps, 5);
+        Assert.Equal(Color.Black, c);
+    }
+
+    [Fact]
+    public void RefractedColorMaximumDepth()
+    {
+        var w     = new World();
+        var shape = w.Shapes[0];
+        shape.Material.Transparency    = 1;
+        shape.Material.RefractiveIndex = 1.5;
+        var r  = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var xs = new List<Intersection>() { new(shape, 4), new(shape, 6) };
+        var comps = xs[0]
+            .PrepareComputation(r, xs);
+        var c = w.RefractedColor(comps, 0);
+        Assert.Equal(Color.Black, c);
+    }
+
+    [Fact]
+    public void RefractedColorTotalInternalReflection()
+    {
+        var w     = new World();
+        var shape = w.Shapes[0];
+        shape.Material.Transparency    = 1;
+        shape.Material.RefractiveIndex = 1.5;
+        var r  = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), new Vector(0, 1, 0));
+        var xs = new List<Intersection>() { new(shape, -Math.Sqrt(2) / 2), new(shape, Math.Sqrt(2) / 2) };
+        var comps = xs[1]
+            .PrepareComputation(r, xs);
+        var c = w.RefractedColor(comps, 5);
+        Assert.Equal(Color.Black, c);
+    }
+
+    [Fact]
+    public void RefractedColorWithRefractedRay()
+    {
+        var w = new World();
+        var A = w.Shapes[0];
+        A.Material.Ambient = 1;
+        A.Material.Pattern = new Pattern();
+        var B = w.Shapes[1];
+        B.Material.Transparency    = 1.0;
+        B.Material.RefractiveIndex = 1.5;
+        var r  = new Ray(new Point(0, 0, 0.1), new Vector(0, 1, 0));
+        var xs = new List<Intersection>() { new(A, -0.9899), new(B, -0.4899), new(B, 0.4899), new(A, 0.9899) };
+        var comps = xs[2]
+            .PrepareComputation(r, xs);
+        var c = w.RefractedColor(comps, 5);
+        Assert.Equal(new Color(0, 0.99887, 0.04721), c);
     }
 }

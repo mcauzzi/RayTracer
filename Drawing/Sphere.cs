@@ -16,16 +16,19 @@ public class Sphere : Shape, IEquatable<Sphere>
         Origin = new Point(0, 0, 0);
     }
 
-    public Point Origin { get; }
+    public static Sphere GlassSphere => new()
+        { Material = new Material() { Transparency = 1, RefractiveIndex = 1.5 } };
+
+    public Point  Origin { get; }
     public double Radius { get; }
 
     public override List<Intersection> LocalIntersect(Ray r)
     {
-        var result = new List<Intersection>();
-        var sphereToRay = r.Origin - Origin;
-        var a = MathTuple.DotProduct(r.Direction, r.Direction);
-        var b = 2 * MathTuple.DotProduct(r.Direction, sphereToRay);
-        var c = MathTuple.DotProduct(sphereToRay, sphereToRay) - 1;
+        var result       = new List<Intersection>();
+        var sphereToRay  = r.Origin - Origin;
+        var a            = MathTuple.DotProduct(r.Direction, r.Direction);
+        var b            = 2 * MathTuple.DotProduct(r.Direction, sphereToRay);
+        var c            = MathTuple.DotProduct(sphereToRay,     sphereToRay) - 1;
         var discriminant = Math.Pow(b, 2) - 4 * a * c;
         if (discriminant < 0)
         {

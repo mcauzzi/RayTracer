@@ -2,7 +2,7 @@
 
 namespace Drawing.Patterns;
 
-public abstract class Pattern
+public class Pattern
 {
     public Pattern()
     {
@@ -11,7 +11,10 @@ public abstract class Pattern
 
     public Matrix Transformation { get; set; }
 
-    public abstract Color ColorAt(MathTuple point);
+    public virtual Color ColorAt(MathTuple point)
+    {
+        return new Color(point.X, point.Y, point.Z);
+    }
 
     public Color ColorAtObject(Shape shape, MathTuple point)
     {

@@ -102,4 +102,12 @@ public class SphereTests
         s.Material = m;
         Assert.Equal(m, s.Material);
     }
+
+    [Fact]
+    public void GlassSphere()
+    {
+        var s = Sphere.GlassSphere;
+        Assert.Equal(1.0, s.Material.Transparency);
+        Assert.Equal(1.5, s.Material.RefractiveIndex);
+    }
 }

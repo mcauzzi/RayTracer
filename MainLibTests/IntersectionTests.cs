@@ -134,4 +134,66 @@ public class IntersectionTests
         var comps = i.PrepareComputation(r);
         Assert.Equal(new Vector(0, Math.Sqrt(2) / 2, Math.Sqrt(2) / 2), comps.ReflectV);
     }
+
+    [Fact]
+    public void N1AndN2AtVariousIntersections()
+    {
+        var A = Sphere.GlassSphere;
+        A.Transformation           = Transforms.GetScalingMatrix(2, 2, 2);
+        A.Material.RefractiveIndex = 1.5;
+        var B = Sphere.GlassSphere;
+        B.Transformation           = Transforms.GetTranslationMatrix(0, 0, -0.25);
+        B.Material.RefractiveIndex = 2;
+        var C = Sphere.GlassSphere;
+        C.Transformation           = Transforms.GetTranslationMatrix(0, 0, 0.25);
+        C.Material.RefractiveIndex = 2.5;
+        var r = new Ray(new Point(0, 0, -4), new Vector(0, 0, 1));
+        var xs = new List<Intersection>
+            { new(A, 2), new(B, 2.75), new(C, 3.25), new(B, 4.75), new(C, 5.25), new(A, 6) };
+        var comps = new List<Computation>();
+        for (int i = 0; i < xs.Count; i++)
+        {
+            comps.Add(xs[i]
+                .PrepareComputation(r, xs));
+        }
+
+        Assert.Equal(1, comps[0]
+            .N1);
+        Assert.Equal(1.5, comps[0]
+            .N2);
+        Assert.Equal(1.5, comps[1]
+            .N1);
+        Assert.Equal(2, comps[1]
+            .N2);
+        Assert.Equal(2, comps[2]
+            .N1);
+        Assert.Equal(2.5, comps[2]
+            .N2);
+        Assert.Equal(2.5, comps[3]
+            .N1);
+        Assert.Equal(2.5, comps[3]
+            .N2);
+        Assert.Equal(2.5, comps[4]
+            .N1);
+        Assert.Equal(1.5, comps[4]
+            .N2);
+        Assert.Equal(1.5, comps[5]
+            .N1);
+        Assert.Equal(1, comps[5]
+            .N2);
+    }
+
+    [Fact]
+    public void UnderPointBelowTheSurface()
+    {
+        var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var s = Sphere.GlassSphere;
+        s.Transformation =  Transforms.GetTranslationMatrix(0, 0, 1);
+        s.Transformation *= Transforms.GetTranslationMatrix(0, 0, 1);
+        var i     = new Intersection(s, 5);
+        var xs    = new List<Intersection>() { i };
+        var comps = i.PrepareComputation(r, xs);
+        Assert.True(comps.UnderPoint.Z > (Constants.Epsilon / 2), $"{comps.UnderPoint.Z}| {-(Constants.Epsilon / 2)}");
+        Assert.True(comps.Point.Z < comps.UnderPoint.Z,           $"{comps.Point.Z} | {comps.UnderPoint.Z}");
+    }
 }
