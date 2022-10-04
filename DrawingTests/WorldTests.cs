@@ -288,4 +288,32 @@ public class WorldTests
         var c = w.RefractedColor(comps, 5);
         Assert.Equal(new Color(0, 0.99887, 0.04721), c);
     }
+
+    [Fact]
+    public void ShadeHitTransparentMaterial()
+    {
+        var w = new World();
+        var floor = new Plane()
+        {
+            Transformation = Transforms.GetTranslationMatrix(0, -1, 0),
+            Material       = new Material() { Transparency = 0.5, RefractiveIndex = 1.5 }
+        };
+        var ball = new Sphere()
+        {
+            Transformation = Transforms.GetTranslationMatrix(0, -3.5, -0.5),
+            Material = new Material()
+            {
+                Color   = new Color(1, 0, 0),
+                Ambient = 0.5,
+            }
+        };
+        w.Shapes.Add(floor);
+        w.Shapes.Add(ball);
+        var r  = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var xs = new List<Intersection>() { new(floor, Math.Sqrt(2)) };
+        var comps = xs[0]
+            .PrepareComputation(r, xs);
+        var c = w.ShadeHit(comps, 5);
+        Assert.Equal(new Color(0.93642, 0.68642, 0.68642), c);
+    }
 }
