@@ -9,7 +9,7 @@ public class WorldTests
     [Fact]
     public void DefaultWorld()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var s1 = new Sphere
         {
             Material = new Material() { Color = new Color(0.8, 1.0, 0.6), Diffuse = 0.7, Specular = 0.2 }
@@ -27,7 +27,7 @@ public class WorldTests
     [Fact]
     public void IntesectWorld()
     {
-        var                w  = new World();
+        var                w  = World.GetDefaultWorld();
         var                r  = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
         List<Intersection> wr = w.Intersect(r);
         Assert.Equal(4, wr.Count);
@@ -44,7 +44,7 @@ public class WorldTests
     [Fact]
     public void IntersectionShade()
     {
-        var   w     = new World();
+        var   w     = World.GetDefaultWorld();
         var   r     = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
         var   s     = w.Shapes.First();
         var   i     = new Intersection(s, 4);
@@ -56,7 +56,7 @@ public class WorldTests
     [Fact]
     public void IntersectionShadeInside()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         w.Lights[0] = new PointLight(Color.White, new Point(0, 0.25, 0));
         var   r     = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
         var   s     = w.Shapes[1];
@@ -69,7 +69,7 @@ public class WorldTests
     [Fact]
     public void RayMiss()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var r = new Ray(new Point(0, 0, -5), new Vector(0, 1, 0));
         var c = w.ColorAt(r);
 
@@ -79,7 +79,7 @@ public class WorldTests
     [Fact]
     public void RayHit()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
         var c = w.ColorAt(r);
 
@@ -89,7 +89,7 @@ public class WorldTests
     [Fact]
     public void RayIntersectionBehindRay()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         w.Shapes.First()
             .Material.Ambient = 1;
         var innerMat = w.Shapes[1]
@@ -104,7 +104,7 @@ public class WorldTests
     [Fact]
     public void NoShadownNothingCollinearPointAndLight()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var p = new Point(0, 10, 0);
         Assert.False(w.IsShadowed(p));
     }
@@ -112,7 +112,7 @@ public class WorldTests
     [Fact]
     public void NoShadownObjectBetweenPointAndLight()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var p = new Point(10, -10, 10);
         Assert.True(w.IsShadowed(p));
     }
@@ -120,7 +120,7 @@ public class WorldTests
     [Fact]
     public void NoShadownObjectBehindLight()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var p = new Point(-20, 20, -20);
         Assert.False(w.IsShadowed(p));
     }
@@ -128,7 +128,7 @@ public class WorldTests
     [Fact]
     public void NoShadownObjectBehindPoint()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var p = new Point(-2, 2, -2);
         Assert.False(w.IsShadowed(p));
     }
@@ -151,7 +151,7 @@ public class WorldTests
     [Fact]
     public void ReflectiveMaterial()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var p = new Plane()
         {
             Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 0.5 }
@@ -167,7 +167,7 @@ public class WorldTests
     [Fact]
     public void NonReflectiveMaterial()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var p = w.Shapes[1];
         var r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
         p.Material.Ambient = 1;
@@ -180,7 +180,7 @@ public class WorldTests
     [Fact]
     public void ShadeHitReflective()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var p = new Plane()
         {
             Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 0.5 }
@@ -215,7 +215,7 @@ public class WorldTests
     [Fact]
     public void ReflectedColorMaximumRecursionDepth()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var p = new Plane()
         {
             Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 0.5 }
@@ -231,7 +231,7 @@ public class WorldTests
     [Fact]
     public void RefractedColorOpaqueSurface()
     {
-        var w     = new World();
+        var w     = World.GetDefaultWorld();
         var shape = w.Shapes[0];
         var r     = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
         var xs    = new List<Intersection>() { new(shape, 4), new(shape, 6) };
@@ -244,7 +244,7 @@ public class WorldTests
     [Fact]
     public void RefractedColorMaximumDepth()
     {
-        var w     = new World();
+        var w     = World.GetDefaultWorld();
         var shape = w.Shapes[0];
         shape.Material.Transparency    = 1;
         shape.Material.RefractiveIndex = 1.5;
@@ -259,40 +259,38 @@ public class WorldTests
     [Fact]
     public void RefractedColorTotalInternalReflection()
     {
-        var w     = new World();
+        var w     = World.GetDefaultWorld();
         var shape = w.Shapes[0];
         shape.Material.Transparency    = 1;
         shape.Material.RefractiveIndex = 1.5;
-        var r  = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), new Vector(0, 1, 0));
-        var xs = new List<Intersection>() { new(shape, -Math.Sqrt(2) / 2), new(shape, Math.Sqrt(2) / 2) };
-        var comps = xs[1]
-            .PrepareComputation(r, xs);
-        var c = w.RefractedColor(comps, 5);
+        var r     = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), new Vector(0, 1, 0));
+        var xs    = new List<Intersection>() { new(shape, -Math.Sqrt(2) / 2), new(shape, Math.Sqrt(2) / 2) };
+        var comps = xs[1].PrepareComputation(r, xs);
+        var c     = w.RefractedColor(comps, 5);
         Assert.Equal(Color.Black, c);
     }
 
     [Fact]
     public void RefractedColorWithRefractedRay()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var A = w.Shapes[0];
         A.Material.Ambient = 1;
         A.Material.Pattern = new Pattern();
         var B = w.Shapes[1];
         B.Material.Transparency    = 1.0;
         B.Material.RefractiveIndex = 1.5;
-        var r  = new Ray(new Point(0, 0, 0.1), new Vector(0, 1, 0));
-        var xs = new List<Intersection>() { new(A, -0.9899), new(B, -0.4899), new(B, 0.4899), new(A, 0.9899) };
-        var comps = xs[2]
-            .PrepareComputation(r, xs);
-        var c = w.RefractedColor(comps, 5);
+        var r     = new Ray(new Point(0, 0, 0.1), new Vector(0, 1, 0));
+        var xs    = new List<Intersection>() { new(A, -0.9899), new(B, -0.4899), new(B, 0.4899), new(A, 0.9899) };
+        var comps = xs[2].PrepareComputation(r, xs);
+        var c     = w.RefractedColor(comps, 5);
         Assert.Equal(new Color(0, 0.99887, 0.04721), c);
     }
 
     [Fact]
     public void ShadeHitTransparentMaterial()
     {
-        var w = new World();
+        var w = World.GetDefaultWorld();
         var floor = new Plane()
         {
             Transformation = Transforms.GetTranslationMatrix(0, -1, 0),
@@ -309,11 +307,37 @@ public class WorldTests
         };
         w.Shapes.Add(floor);
         w.Shapes.Add(ball);
-        var r  = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
-        var xs = new List<Intersection>() { new(floor, Math.Sqrt(2)) };
-        var comps = xs[0]
-            .PrepareComputation(r, xs);
-        var c = w.ShadeHit(comps, 5);
+        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var xs    = new List<Intersection>() { new(floor, Math.Sqrt(2)) };
+        var comps = xs[0].PrepareComputation(r, xs);
+        var c     = w.ShadeHit(comps, 5);
         Assert.Equal(new Color(0.93642, 0.68642, 0.68642), c);
+    }
+
+    [Fact]
+    public void ShadeHitReflectiveTransparentMaterial()
+    {
+        var w = World.GetDefaultWorld();
+        var floor = new Plane()
+        {
+            Transformation = Transforms.GetTranslationMatrix(0, -1, 0),
+            Material       = new Material() { Transparency = 0.5, RefractiveIndex = 1.5, Reflective = 0.5 }
+        };
+        var ball = new Sphere()
+        {
+            Transformation = Transforms.GetTranslationMatrix(0, -3.5, -0.5),
+            Material = new Material()
+            {
+                Color   = new Color(1, 0, 0),
+                Ambient = 0.5,
+            }
+        };
+        w.Shapes.Add(floor);
+        w.Shapes.Add(ball);
+        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var xs    = new List<Intersection>() { new(floor, Math.Sqrt(2)) };
+        var comps = xs[0].PrepareComputation(r, xs);
+        var c     = w.ShadeHit(comps, 5);
+        Assert.Equal(new Color(0.93391, 0.69643, 0.69243), c);
     }
 }

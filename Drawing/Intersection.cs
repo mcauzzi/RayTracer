@@ -127,4 +127,23 @@ public class Computation
     public double    N1         { get; set; }
     public double    N2         { get; set; }
     public MathTuple UnderPoint { get; set; }
+
+    public double Schlick()
+    {
+        var cos = MathTuple.DotProduct(EyeV, NormalV);
+        if (N1 > N2)
+        {
+            var n     = N1 / N2;
+            var sin2t = Math.Pow(n, 2) * (1 - Math.Pow(cos, 2));
+            if (sin2t > 1)
+            {
+                return 1.0;
+            }
+
+            cos = Math.Sqrt(1 - sin2t);
+        }
+
+        var r0 = Math.Pow((N1 - N2) / (N1 + N2), 2);
+        return r0 + (1 - r0) * Math.Pow(1 - cos, 5);
+    }
 }

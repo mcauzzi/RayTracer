@@ -3,85 +3,61 @@
 
 using System.Diagnostics;
 using Drawing;
-using Drawing.Patterns;
 using MainLib;
 
 var floor = new Plane
 {
-    Material = new Material()
+    Material = new Material
     {
-        Color   = new Color(1, 0.9, 0.9), Specular                                        = 0,
-        Pattern = new RingPattern(new Color(0, 0.5, 0), new Color(0.5, 0, 0)), Reflective = 0.3
+        Color      = new Color(0, 0, 1), Specular = 0.2, Diffuse       = 0.2, Ambient = 0.1,
+        Reflective = 0.3, Transparency            = 0, RefractiveIndex = 1.5
     }
 };
-var ceiling = new Plane
+var backGround = new Plane
 {
-    Material = new Material()
-        { Color = new Color(0.8, 0.3, 0.4), Specular = 0, Pattern = new StripePattern(Color.Green, Color.Red) },
-    Transformation = Transforms.GetTranslationMatrix(0, 11, 0)
+    Material = new Material
+        { Color = new Color(0.8, 0.8, 0.8), Specular = 0.4, Diffuse = 0.2, Reflective = 0, RefractiveIndex = 0 },
+    Transformation = Transforms.GetTranslationMatrix(0, 0, 10) * Transforms.RotateX(Math.PI / 2)
 };
-var rightWall = new Plane
+var sphereList = new List<Sphere>();
+var rnd        = new Random();
+for (int i = 0; i < 4; i++)
 {
-    Material = new Material()
+    for (int j = 0; j < 4; j++)
     {
-        Color   = new Color(0.8, 0.3, 0.4), Specular = 0,
-        Pattern = new StripePattern(new Color(0.5, 0.5, 0.5), Color.White)
-    },
-    Transformation = Transforms.GetTranslationMatrix(5, 0, 0) * Transforms.RotateZ(Math.PI / 4) *
-                     Transforms.RotateY(-Math.PI / 4)
-};
-var leftWall = new Plane
-{
-    Material = new Material() { Color = new Color(0.8, 0.3, 0.4), Specular = 0 },
-    Transformation = Transforms.GetTranslationMatrix(-5, 0, 0) * Transforms.RotateZ(-Math.PI / 4) *
-                     Transforms.RotateY(Math.PI / 4)
-};
-var middle = new Sphere()
-{
-    Transformation = Transforms.GetTranslationMatrix(-0.5, 5, -2.5),
-    Material = new Material()
-    {
-        Color      = new Color(0.1, 1, 0.5),
-        Diffuse    = 0.7,
-        Specular   = 0.6,
-        Pattern    = new GradientPattern(Color.Green, Color.Blue),
-        Reflective = 0.3
+        for (int k = 0; k < 4; k++)
+        {
+            sphereList.Add(new Sphere
+            {
+                Transformation = Transforms.GetTranslationMatrix(-13 + i * 3, -9 + j * 3, 8 - k * 4),
+                Material = new Material
+                {
+                    Color   = new Color(i / (double)3, j / (double)3, k / (double)3),
+                    Ambient = 0.4, Diffuse = 0.1, Specular = 0.6, Reflective = 0.6,
+                    // Pattern = new RingPattern(new Color(rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble()),
+                    //         new Color(rnd.NextDouble(),                   rnd.NextDouble(), rnd.NextDouble()))
+                    //     { Transformation = Transforms.GetScalingMatrix(2,1,1) }
+                }
+            });
+        }
     }
-};
-var right = new Sphere()
+}
+
+var camera = new Camera(1920, 1080, Math.PI / 3)
 {
-    Transformation = Transforms.GetTranslationMatrix(0.75, 5, -3.5) * Transforms.GetScalingMatrix(0.5, 0.5, 0.5),
-    Material = new Material()
-    {
-        Color    = new Color(0.5, 1, 0.1),
-        Diffuse  = 0.7,
-        Specular = 0.6,
-        Pattern  = new StripePattern(new Color(0.5, 0, 0.5), Color.Red)
-    }
+    Transform = Transforms.ViewTransform(new Point(9, -5, -11), new Point(-18, -5, 13), new Vector(0, 1, 0))
 };
-var left = new Sphere()
-{
-    Transformation = Transforms.GetTranslationMatrix(1.5, 5, -5) * Transforms.GetScalingMatrix(0.33, 0.33, 0.33),
-    Material = new Material()
-    {
-        Color    = new Color(1, 0.8, 0.1),
-        Diffuse  = 0.7,
-        Specular = 0.6,
-        Pattern  = new RandomPattern()
-    }
-};
-var camera = new Camera(800, 600, Math.PI / 3)
-{
-    Transform = Transforms.ViewTransform(new Point(0, 8, -6), new Point(0, 0, 0), new Vector(0, 1, 0))
-};
-var pl  = new PointLight(new Color(0.3, 0.3, 0.3), new Point(3, 6, -8));
-var pl2 = new PointLight(Color.White,              new Point(0, 6, 4));
-var world = new World(new List<PointLight>() { pl, pl2 },
-    new List<Shape>() { floor, ceiling, rightWall, leftWall, right, middle, left });
+var pl2    = new PointLight(Color.White, new Point(1, 2, -6));
+var shapes = new List<Shape> { backGround };
+shapes.AddRange(sphereList);
+var world = new World(new List<PointLight> { pl2 },
+    shapes);
 
 var st = new Stopwatch();
+
 st.Start();
-var canvas = camera.Render(world);
+
+var canvas = camera.RenderMultiThreaded(world);
 st.Stop();
 Console.WriteLine($"Total Render Time {st.Elapsed}");
 new PPMCreator(canvas).WriteToFile("Sphere");

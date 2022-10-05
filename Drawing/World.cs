@@ -4,7 +4,7 @@ namespace Drawing;
 
 public class World
 {
-    public World()
+    private World()
     {
         Lights = new List<PointLight>();
         Shapes = new List<Shape>();
@@ -30,6 +30,8 @@ public class World
     public List<PointLight> Lights { get; }
     public List<Shape>      Shapes { get; set; }
 
+    public static World GetDefaultWorld() => new();
+
     public List<Intersection> Intersect(Ray ray)
     {
         var intersection = new List<Intersection>();
@@ -53,6 +55,13 @@ public class World
                 IsShadowed(comps.OverPoint, light)));
         var reflected = ReflectedColor(comps, remaining);
         var refracted = RefractedColor(comps, remaining);
+        var mat       = comps.Obj.Material;
+        if (mat.Reflective > 0 && mat.Transparency > 0)
+        {
+            var reflectance = comps.Schlick();
+            return surface + reflected * reflectance + refracted * (1 - reflectance);
+        }
+
         return surface + reflected + refracted;
     }
 
@@ -66,7 +75,7 @@ public class World
         }
         else
         {
-            var comps = hits.PrepareComputation(r);
+            var comps = hits.PrepareComputation(r, inter);
             return ShadeHit(comps, remaining);
         }
     }

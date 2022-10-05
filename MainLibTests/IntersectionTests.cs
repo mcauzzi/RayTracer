@@ -196,4 +196,37 @@ public class IntersectionTests
         Assert.True(comps.UnderPoint.Z > (Constants.Epsilon / 2), $"{comps.UnderPoint.Z}| {-(Constants.Epsilon / 2)}");
         Assert.True(comps.Point.Z < comps.UnderPoint.Z,           $"{comps.Point.Z} | {comps.UnderPoint.Z}");
     }
+
+    [Fact]
+    public void SchlickWithTotalInternalRefraction()
+    {
+        var shape       = Sphere.GlassSphere;
+        var ray         = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), new Vector(0, 1, 0));
+        var xs          = new List<Intersection>() { new(shape, -Math.Sqrt(2) / 2), new(shape, Math.Sqrt(2) / 2) };
+        var comps       = xs[1].PrepareComputation(ray, xs);
+        var reflectance = comps.Schlick();
+        Assert.Equal(1, reflectance);
+    }
+
+    [Fact]
+    public void SchlickWithPerpendicularAngle()
+    {
+        var shape       = Sphere.GlassSphere;
+        var ray         = new Ray(new Point(0, 0, 0), new Vector(0, 1, 0));
+        var xs          = new List<Intersection>() { new(shape, -1), new(shape, 1) };
+        var comps       = xs[1].PrepareComputation(ray, xs);
+        var reflectance = comps.Schlick();
+        Assert.Equal(0.04, reflectance, 4);
+    }
+
+    [Fact]
+    public void SchlickWithSmallAngle()
+    {
+        var shape       = Sphere.GlassSphere;
+        var ray         = new Ray(new Point(0, 0.99, -2), new Vector(0, 0, 1));
+        var xs          = new List<Intersection>() { new(shape, 1.8589) };
+        var comps       = xs[0].PrepareComputation(ray, xs);
+        var reflectance = comps.Schlick();
+        Assert.Equal(0.48873, reflectance, 5);
+    }
 }
