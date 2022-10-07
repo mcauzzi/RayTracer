@@ -26,7 +26,7 @@ public abstract class Shape
 
     public Material Material { get; set; }
 
-    public MathTuple Normal(Point p)
+    public MathTuple Normal(MathTuple p)
     {
         var inverseTrans = TransformationInverse;
         var objPoint     = inverseTrans * p;
@@ -38,9 +38,9 @@ public abstract class Shape
 
     public abstract MathTuple LocalNormal(MathTuple objPoint);
 
-    public abstract List<Intersection> LocalIntersect(Ray r);
+    public abstract Intersection[] LocalIntersect(Ray r);
 
-    public List<Intersection> Intersect(Ray r)
+    public Intersection[] Intersect(Ray r)
     {
         var localRay = r.Transform(TransformationInverse);
         return LocalIntersect(localRay);

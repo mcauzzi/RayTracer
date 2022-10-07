@@ -5,6 +5,8 @@ namespace Drawing;
 
 public class Camera
 {
+    private Matrix _transform;
+
     public Camera(int hSize, int vSize, double fov)
     {
         HSize = hSize;
@@ -19,11 +21,25 @@ public class Camera
     public int    VSize     { get; }
     public double FOV       { get; }
     public double PixelSize { get; private set; }
-    public Matrix Transform { get; set; }
 
-    public double HalfHeight { get; private set; }
+    public Matrix Transform
+    {
+        get => _transform;
+        set
+        {
+            _transform       = value;
+            InverseTransform = value.GetInverse();
+            OriginPoint      = InverseTransform * MathTuple.GetPoint(0, 0, 0);
+        }
+    }
 
-    public double HalfWidth { get; private set; }
+    private MathTuple OriginPoint { get; set; }
+
+    private Matrix InverseTransform { get; set; }
+
+    private double HalfHeight { get; set; }
+
+    private double HalfWidth { get; set; }
 
     private void SetPixelSize()
     {
@@ -45,15 +61,13 @@ public class Camera
 
     public Ray RayForPixel(int px, int py)
     {
-        var offsetX          = (px + 0.5) * PixelSize;
-        var offsetY          = (py + 0.5) * PixelSize;
-        var worldX           = HalfWidth - offsetX;
-        var worldY           = HalfHeight - offsetY;
-        var inverseTransform = Transform.GetInverse();
-        var pixel            = inverseTransform * new Point(worldX, worldY, -1);
-        var origin           = inverseTransform * new Point(0,      0,      0);
-        var direction        = (pixel - origin).Normalize();
-        return new Ray(origin, direction);
+        var offsetX   = (px + 0.5) * PixelSize;
+        var offsetY   = (py + 0.5) * PixelSize;
+        var worldX    = HalfWidth - offsetX;
+        var worldY    = HalfHeight - offsetY;
+        var pixel     = InverseTransform * MathTuple.GetPoint(worldX, worldY, -1);
+        var direction = (pixel - OriginPoint).Normalize();
+        return new Ray(OriginPoint, direction);
     }
 
     public Canvas RenderMultiThreaded(World world)
@@ -88,6 +102,32 @@ public class Camera
         }
 
         return res;
+    }
+
+    public Canvas RenderWithTasks(World world)
+    {
+        var res      = new Canvas(HSize, VSize);
+        var taskList = new List<Task>();
+        for (int i = 0; i < VSize; i++)
+        {
+            var i1 = i;
+            taskList.Add(Task.Run(() => RenderRow(world, i1, res)));
+            if (taskList.Count > Constants.NUMBER_OF_THREADS)
+            {
+                Task.WaitAll(taskList.ToArray());
+                taskList.Clear();
+            }
+        }
+
+        return res;
+    }
+
+    private void RenderRow(World world, int i1, Canvas res)
+    {
+        for (int j = 0; j < HSize; j++)
+        {
+            GetRenderedPixel(world, j, i1, res);
+        }
     }
 
     public Canvas RenderSingleThread(World world)

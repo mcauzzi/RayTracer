@@ -18,7 +18,7 @@ public class WorldTests
         {
             Transformation = Transforms.GetScalingMatrix(0.5, 0.5, 0.5)
         };
-        var l = new PointLight(Color.White, new Point(-10, 10, -10));
+        var l = new PointLight(Color.White, MathTuple.GetPoint(-10, 10, -10));
         Assert.Equal(s1, w.Shapes.First());
         Assert.Equal(s2, w.Shapes[1]);
         Assert.Equal(l,  w.Lights.First());
@@ -28,7 +28,7 @@ public class WorldTests
     public void IntesectWorld()
     {
         var                w  = World.GetDefaultWorld();
-        var                r  = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var                r  = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 0, 1));
         List<Intersection> wr = w.Intersect(r);
         Assert.Equal(4, wr.Count);
         Assert.Equal(4, wr[0]
@@ -45,7 +45,7 @@ public class WorldTests
     public void IntersectionShade()
     {
         var   w     = World.GetDefaultWorld();
-        var   r     = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var   r     = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 0, 1));
         var   s     = w.Shapes.First();
         var   i     = new Intersection(s, 4);
         var   comps = i.PrepareComputation(r);
@@ -57,8 +57,8 @@ public class WorldTests
     public void IntersectionShadeInside()
     {
         var w = World.GetDefaultWorld();
-        w.Lights[0] = new PointLight(Color.White, new Point(0, 0.25, 0));
-        var   r     = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+        w.Lights[0] = new PointLight(Color.White, MathTuple.GetPoint(0, 0.25, 0));
+        var   r     = new Ray(MathTuple.GetPoint(0, 0, 0), MathTuple.GetVector(0, 0, 1));
         var   s     = w.Shapes[1];
         var   i     = new Intersection(s, 0.5);
         var   comps = i.PrepareComputation(r);
@@ -70,7 +70,7 @@ public class WorldTests
     public void RayMiss()
     {
         var w = World.GetDefaultWorld();
-        var r = new Ray(new Point(0, 0, -5), new Vector(0, 1, 0));
+        var r = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 1, 0));
         var c = w.ColorAt(r);
 
         Assert.Equal(Color.Black, c);
@@ -80,7 +80,7 @@ public class WorldTests
     public void RayHit()
     {
         var w = World.GetDefaultWorld();
-        var r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var r = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 0, 1));
         var c = w.ColorAt(r);
 
         Assert.Equal(new Color(0.38066, 0.47583, 0.2855), c);
@@ -95,7 +95,7 @@ public class WorldTests
         var innerMat = w.Shapes[1]
             .Material;
         innerMat.Ambient = 1;
-        var r = new Ray(new Point(0, 0, 0.75), new Vector(0, 0, -1));
+        var r = new Ray(MathTuple.GetPoint(0, 0, 0.75), MathTuple.GetVector(0, 0, -1));
         var c = w.ColorAt(r);
 
         Assert.Equal(innerMat.Color, c);
@@ -105,7 +105,7 @@ public class WorldTests
     public void NoShadownNothingCollinearPointAndLight()
     {
         var w = World.GetDefaultWorld();
-        var p = new Point(0, 10, 0);
+        var p = MathTuple.GetPoint(0, 10, 0);
         Assert.False(w.IsShadowed(p));
     }
 
@@ -113,7 +113,7 @@ public class WorldTests
     public void NoShadownObjectBetweenPointAndLight()
     {
         var w = World.GetDefaultWorld();
-        var p = new Point(10, -10, 10);
+        var p = MathTuple.GetPoint(10, -10, 10);
         Assert.True(w.IsShadowed(p));
     }
 
@@ -121,7 +121,7 @@ public class WorldTests
     public void NoShadownObjectBehindLight()
     {
         var w = World.GetDefaultWorld();
-        var p = new Point(-20, 20, -20);
+        var p = MathTuple.GetPoint(-20, 20, -20);
         Assert.False(w.IsShadowed(p));
     }
 
@@ -129,19 +129,19 @@ public class WorldTests
     public void NoShadownObjectBehindPoint()
     {
         var w = World.GetDefaultWorld();
-        var p = new Point(-2, 2, -2);
+        var p = MathTuple.GetPoint(-2, 2, -2);
         Assert.False(w.IsShadowed(p));
     }
 
     [Fact]
     public void ShadeHitWithShadow()
     {
-        var l  = new PointLight(Color.White, new Point(0, 0, -10));
+        var l  = new PointLight(Color.White, MathTuple.GetPoint(0, 0, -10));
         var s  = new Sphere();
         var s1 = new Sphere();
         s1.Transformation *= Transforms.GetTranslationMatrix(0, 0, 10);
         var w     = new World(new List<PointLight>() { l }, new List<Shape> { s1, s });
-        var r     = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, 5), MathTuple.GetVector(0, 0, 1));
         var i     = new Intersection(s1, 4);
         var comps = i.PrepareComputation(r);
         var c     = w.ShadeHit(comps);
@@ -157,7 +157,7 @@ public class WorldTests
             Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 0.5 }
         };
         w.Shapes.Add(p);
-        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, -3), MathTuple.GetVector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
         var i     = new Intersection(p, Math.Sqrt(2));
         var comps = i.PrepareComputation(r);
         var color = w.ReflectedColor(comps);
@@ -169,7 +169,7 @@ public class WorldTests
     {
         var w = World.GetDefaultWorld();
         var p = w.Shapes[1];
-        var r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+        var r = new Ray(MathTuple.GetPoint(0, 0, 0), MathTuple.GetVector(0, 0, 1));
         p.Material.Ambient = 1;
         var i     = new Intersection(p, 1);
         var comps = i.PrepareComputation(r);
@@ -186,7 +186,7 @@ public class WorldTests
             Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 0.5 }
         };
         w.Shapes.Add(p);
-        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, -3), MathTuple.GetVector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
         var i     = new Intersection(p, Math.Sqrt(2));
         var comps = i.PrepareComputation(r);
         var color = w.ShadeHit(comps);
@@ -196,7 +196,7 @@ public class WorldTests
     [Fact]
     public void ShouldTerminate()
     {
-        var light = new PointLight(Color.White, new Point(0, 0, 0));
+        var light = new PointLight(Color.White, MathTuple.GetPoint(0, 0, 0));
         var p = new Plane()
         {
             Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 1 }
@@ -205,7 +205,7 @@ public class WorldTests
         var p1 = new Plane()
             { Transformation = Transforms.GetTranslationMatrix(0, 1, 0), Material = new Material() { Reflective = 1 } };
 
-        var r     = new Ray(new Point(0, 0, 0), new Vector(0, -1, 0));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, 0), MathTuple.GetVector(0, -1, 0));
         var w     = new World(new List<PointLight>() { light }, new List<Shape>() { p, p1 });
         var color = w.ColorAt(r);
         var res   = Record.Exception(() => w.ColorAt(r));
@@ -221,7 +221,7 @@ public class WorldTests
             Transformation = Transforms.GetTranslationMatrix(0, -1, 0), Material = new Material() { Reflective = 0.5 }
         };
         w.Shapes.Add(p);
-        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, -3), MathTuple.GetVector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
         var i     = new Intersection(p, Math.Sqrt(2));
         var comps = i.PrepareComputation(r);
         var color = w.ReflectedColor(comps, 0);
@@ -233,7 +233,7 @@ public class WorldTests
     {
         var w     = World.GetDefaultWorld();
         var shape = w.Shapes[0];
-        var r     = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 0, 1));
         var xs    = new List<Intersection>() { new(shape, 4), new(shape, 6) };
         var comps = xs[0]
             .PrepareComputation(r, xs);
@@ -248,7 +248,7 @@ public class WorldTests
         var shape = w.Shapes[0];
         shape.Material.Transparency    = 1;
         shape.Material.RefractiveIndex = 1.5;
-        var r  = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        var r  = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 0, 1));
         var xs = new List<Intersection>() { new(shape, 4), new(shape, 6) };
         var comps = xs[0]
             .PrepareComputation(r, xs);
@@ -263,7 +263,7 @@ public class WorldTests
         var shape = w.Shapes[0];
         shape.Material.Transparency    = 1;
         shape.Material.RefractiveIndex = 1.5;
-        var r     = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), new Vector(0, 1, 0));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, Math.Sqrt(2) / 2), MathTuple.GetVector(0, 1, 0));
         var xs    = new List<Intersection>() { new(shape, -Math.Sqrt(2) / 2), new(shape, Math.Sqrt(2) / 2) };
         var comps = xs[1].PrepareComputation(r, xs);
         var c     = w.RefractedColor(comps, 5);
@@ -280,7 +280,7 @@ public class WorldTests
         var B = w.Shapes[1];
         B.Material.Transparency    = 1.0;
         B.Material.RefractiveIndex = 1.5;
-        var r     = new Ray(new Point(0, 0, 0.1), new Vector(0, 1, 0));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, 0.1), MathTuple.GetVector(0, 1, 0));
         var xs    = new List<Intersection>() { new(A, -0.9899), new(B, -0.4899), new(B, 0.4899), new(A, 0.9899) };
         var comps = xs[2].PrepareComputation(r, xs);
         var c     = w.RefractedColor(comps, 5);
@@ -307,7 +307,7 @@ public class WorldTests
         };
         w.Shapes.Add(floor);
         w.Shapes.Add(ball);
-        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, -3), MathTuple.GetVector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
         var xs    = new List<Intersection>() { new(floor, Math.Sqrt(2)) };
         var comps = xs[0].PrepareComputation(r, xs);
         var c     = w.ShadeHit(comps, 5);
@@ -334,7 +334,7 @@ public class WorldTests
         };
         w.Shapes.Add(floor);
         w.Shapes.Add(ball);
-        var r     = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        var r     = new Ray(MathTuple.GetPoint(0, 0, -3), MathTuple.GetVector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
         var xs    = new List<Intersection>() { new(floor, Math.Sqrt(2)) };
         var comps = xs[0].PrepareComputation(r, xs);
         var c     = w.ShadeHit(comps, 5);

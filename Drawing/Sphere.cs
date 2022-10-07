@@ -4,7 +4,7 @@ namespace Drawing;
 
 public class Sphere : Shape, IEquatable<Sphere>
 {
-    public Sphere(Point origin, double radius)
+    public Sphere(MathTuple origin, double radius)
     {
         Radius = radius;
         Origin = origin;
@@ -13,18 +13,17 @@ public class Sphere : Shape, IEquatable<Sphere>
     public Sphere()
     {
         Radius = 1;
-        Origin = new Point(0, 0, 0);
+        Origin = MathTuple.GetPoint(0, 0, 0);
     }
 
     public static Sphere GlassSphere => new()
         { Material = new Material() { Transparency = 1, RefractiveIndex = 1.5 } };
 
-    public Point  Origin { get; }
-    public double Radius { get; }
+    public MathTuple Origin { get; }
+    public double    Radius { get; }
 
-    public override List<Intersection> LocalIntersect(Ray r)
+    public override Intersection[] LocalIntersect(Ray r)
     {
-        var result       = new List<Intersection>();
         var sphereToRay  = r.Origin - Origin;
         var a            = MathTuple.DotProduct(r.Direction, r.Direction);
         var b            = 2 * MathTuple.DotProduct(r.Direction, sphereToRay);
@@ -32,17 +31,19 @@ public class Sphere : Shape, IEquatable<Sphere>
         var discriminant = Math.Pow(b, 2) - 4 * a * c;
         if (discriminant < 0)
         {
-            return result;
+            return Array.Empty<Intersection>();
         }
 
-        result.Add(new Intersection(this, (-b - Math.Sqrt(discriminant)) / (2 * a)));
-        result.Add(new Intersection(this, (-b + Math.Sqrt(discriminant)) / (2 * a)));
-        return result;
+        return new[]
+        {
+            new Intersection(this, (-b - Math.Sqrt(discriminant)) / (2 * a)),
+            new Intersection(this, (-b + Math.Sqrt(discriminant)) / (2 * a))
+        };
     }
 
     public override MathTuple LocalNormal(MathTuple p)
     {
-        return p - new Point(0, 0, 0);
+        return p - MathTuple.GetPoint(0, 0, 0);
     }
 
     #region Equality

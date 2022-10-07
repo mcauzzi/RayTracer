@@ -8,7 +8,7 @@ public class World
     {
         Lights = new List<PointLight>();
         Shapes = new List<Shape>();
-        Lights.Add(new PointLight(Color.White, new Point(-10, 10, -10)));
+        Lights.Add(new PointLight(Color.White, MathTuple.GetPoint(-10, 10, -10)));
         var s1 = new Sphere
         {
             Material = new Material() { Color = new Color(0.8, 1.0, 0.6), Diffuse = 0.7, Specular = 0.2 }

@@ -8,7 +8,7 @@ public class PointLightTests
     public void Creation()
     {
         var intensity = Color.White;
-        var position  = new Point(0, 0, 0);
+        var position  = MathTuple.GetPoint(0, 0, 0);
         var l         = new PointLight(intensity, position);
 
         Assert.Equal(intensity, l.Intensity);

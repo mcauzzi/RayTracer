@@ -70,12 +70,12 @@ namespace MainLib
             });
         }
 
-        public static Matrix ViewTransform(Point from, Point to, Vector up)
+        public static Matrix ViewTransform(MathTuple from, MathTuple to, MathTuple up)
         {
-            var forward = (to - from).Normalize();
-            var upn = up.Normalize();
-            var left = MathTuple.CrossProduct(forward, upn);
-            var trueUp = MathTuple.CrossProduct(left, forward);
+            var forward    = (to - from).Normalize();
+            var upn        = up.Normalize();
+            var left       = MathTuple.CrossProduct(forward, upn);
+            var trueUp     = MathTuple.CrossProduct(left,    forward);
             var negForward = -forward;
             var orientation = new Matrix(new double[,]
             {

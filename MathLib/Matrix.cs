@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using GlobalConstants;
 
 namespace MainLib;
 
-public class Matrix : IEquatable<Matrix>
+public struct Matrix : IEquatable<Matrix>
 {
     public Matrix(double[,] mtx)
     {
@@ -76,8 +75,13 @@ public class Matrix : IEquatable<Matrix>
         }
 
         var row = GetRow(0);
+        var sum = 0.0;
+        for (int i = 0; i < row.Length; i++)
+        {
+            sum += row[i] * GetCofactor(0, i);
+        }
 
-        return row.Select((t, i) => t * GetCofactor(0, i)).Sum();
+        return sum;
     }
 
     public Matrix GetInverse()
@@ -109,7 +113,11 @@ public class Matrix : IEquatable<Matrix>
             {
                 var col = left.GetRow(i);
                 var row = right.GetColumn(j);
-                res[i, j] = col.Zip(row, (col, row) => col * row).Sum();
+
+                for (int k = 0; k < row.Length; k++)
+                {
+                    res[i, j] += col[k] * row[k];
+                }
             }
         }
 
@@ -118,19 +126,30 @@ public class Matrix : IEquatable<Matrix>
 
     public static MathTuple operator *(Matrix left, MathTuple right)
     {
-        var res = new MathTuple(0,
-            0,
-            0,
-            0);
+        var res = new double[4];
         for (int i = 0; i < left.Mtx.GetLength(0); i++)
         {
             for (int j = 0; j < left.Mtx.GetLength(1); j++)
             {
-                res[i] += left.Mtx[i, j] * right[j];
+                switch (j)
+                {
+                    case 0:
+                        res[i] += left.Mtx[i, j] * right.X;
+                        break;
+                    case 1:
+                        res[i] += left.Mtx[i, j] * right.Y;
+                        break;
+                    case 2:
+                        res[i] += left.Mtx[i, j] * right.Z;
+                        break;
+                    case 3:
+                        res[i] += left.Mtx[i, j] * right.W;
+                        break;
+                }
             }
         }
 
-        return res;
+        return new MathTuple(res[0], res[1], res[2], res[3]);
     }
 
 

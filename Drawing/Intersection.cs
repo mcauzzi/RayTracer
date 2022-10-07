@@ -26,24 +26,40 @@ public class Intersection
             inside  = true;
         }
 
-        var res = new Computation(Distance, Obj, point, eyeV, normalV, inside);
+        var    ReflectV   = r.Direction.Reflect(normalV);
+        var    OverPoint  = point + (normalV * Constants.Epsilon);
+        var    UnderPoint = point - (normalV * Constants.Epsilon);
+        double n1         = 0, n2 = 0;
         if (intersections != null)
         {
-            CalculateN1N2(intersections, res);
+            CalculateN1N2(intersections, out n1, out n2);
         }
 
-        res.ReflectV   = r.Direction.Reflect(res.NormalV);
-        res.OverPoint  = res.Point + (res.NormalV * Constants.Epsilon);
-        res.UnderPoint = res.Point - (res.NormalV * Constants.Epsilon);
+        var res = new Computation(Distance, Obj, point, eyeV, normalV, inside, ReflectV, OverPoint, UnderPoint, n1, n2);
+
+
         return res;
     }
 
-    private void CalculateN1N2(List<Intersection>? intersections, Computation res)
+    private void CalculateN1N2(List<Intersection>? intersections, out double n1, out double n2)
     {
         var containers = new List<Shape>();
+        n1 = n2        = 0;
         foreach (var i in intersections)
         {
-            ComputeN1(res, i, containers);
+            if (i == this)
+            {
+                if (!containers.Any())
+                {
+                    n1 = 1.0;
+                }
+                else
+                {
+                    n1 = containers.TakeLast(1)
+                        .First()
+                        .Material.RefractiveIndex;
+                }
+            }
 
             if (containers.Contains(i.Obj))
             {
@@ -55,41 +71,37 @@ public class Intersection
             }
 
             if (i != this) continue;
-            ComputeN2(res, containers);
-
-            return;
+            if (i == this)
+            {
+                if (!containers.Any())
+                {
+                    n2 = 1.0;
+                }
+                else
+                {
+                    n2 = containers.TakeLast(1)
+                        .First()
+                        .Material.RefractiveIndex;
+                }
+            }
         }
     }
 
-    private void ComputeN2(Computation res, List<Shape> containers)
+    private double ComputeN2(List<Shape> containers)
     {
         if (!containers.Any())
         {
-            res.N2 = 1.0;
+            return 1.0;
         }
-        else
-        {
-            res.N2 = containers.TakeLast(1)
-                .First()
-                .Material.RefractiveIndex;
-        }
+
+        return containers.TakeLast(1)
+            .First()
+            .Material.RefractiveIndex;
     }
 
-    private void ComputeN1(Computation res, Intersection i, List<Shape> containers)
+    private double ComputeN1(Intersection i, List<Shape> containers)
     {
-        if (i == this)
-        {
-            if (!containers.Any())
-            {
-                res.N1 = 1.0;
-            }
-            else
-            {
-                res.N1 = containers.TakeLast(1)
-                    .First()
-                    .Material.RefractiveIndex;
-            }
-        }
+        return 0;
     }
 
     /// <summary>
@@ -104,21 +116,28 @@ public class Intersection
     }
 }
 
-public class Computation
+public struct Computation
 {
-    public Computation(double distance, Shape obj, Point point, MathTuple eyeV, MathTuple normalV, bool inside)
+    public Computation(double distance, Shape obj, MathTuple point, MathTuple eyeV, MathTuple normalV, bool inside,
+        MathTuple reflectV, MathTuple overPoint, MathTuple underPoint, double n1, double n2)
     {
-        Distance = distance;
-        Obj      = obj;
-        Point    = point;
-        EyeV     = eyeV;
-        NormalV  = normalV;
-        IsInside = inside;
+        Distance   = distance;
+        Obj        = obj;
+        Point      = point;
+        EyeV       = eyeV;
+        NormalV    = normalV;
+        IsInside   = inside;
+        OverPoint  = overPoint;
+        ReflectV   = reflectV;
+        UnderPoint = underPoint;
+        N1         = n1;
+        N2         = n2;
     }
+
 
     public double    Distance   { get; }
     public Shape     Obj        { get; }
-    public Point     Point      { get; }
+    public MathTuple Point      { get; }
     public MathTuple EyeV       { get; }
     public MathTuple NormalV    { get; }
     public bool      IsInside   { get; }

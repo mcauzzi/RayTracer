@@ -89,10 +89,11 @@ for (int i = 0; i < cubeLength; i++)
 // });
 var camera = new Camera(800, 600, Math.PI / 2)
 {
-    Transform = Transforms.ViewTransform(new Point(0.5, -6.5, -5.5), new Point(-10, -6.5, +5), new Vector(0, 1, 0))
+    Transform = Transforms.ViewTransform(MathTuple.GetPoint(0.5, -6.5, -5.5), MathTuple.GetPoint(-10, -6.5, +5),
+        MathTuple.GetVector(0, 1, 0))
 };
-var pl2    = new PointLight(Color.White, new Point(7,   -3, 8));
-var pl     = new PointLight(Color.White, new Point(4.5, 0,  -9.5));
+var pl2    = new PointLight(Color.White, MathTuple.GetPoint(7,   -3, 8));
+var pl     = new PointLight(Color.White, MathTuple.GetPoint(4.5, 0,  -9.5));
 var shapes = new List<Shape> { backGround };
 shapes.AddRange(sphereList);
 var world = new World(new List<PointLight> { pl },
@@ -102,7 +103,8 @@ var st = new Stopwatch();
 
 st.Start();
 
-var canvas = camera.RenderMultiThreaded(world);
+var canvas = camera.RenderWithTasks(world);
 st.Stop();
-Console.WriteLine($"Total Render Time {st.Elapsed}");
+Console.WriteLine(
+    $"Total Render Time {st.Elapsed}, Pixel/s:{((canvas.Height * canvas.Width) / (double)st.ElapsedMilliseconds) * 1000}");
 new PPMCreator(canvas).WriteToFile("Sphere");

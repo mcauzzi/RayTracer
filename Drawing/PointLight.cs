@@ -2,14 +2,14 @@
 
 public class PointLight : IEquatable<PointLight>
 {
-    public PointLight(Color intensity, Point position)
+    public PointLight(Color intensity, MathTuple position)
     {
         Intensity = intensity;
-        Position = position;
+        Position  = position;
     }
 
-    public Color Intensity { get; }
-    public Point Position { get; }
+    public Color     Intensity { get; }
+    public MathTuple Position  { get; }
 
     #region Equality
 

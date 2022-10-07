@@ -3,7 +3,7 @@ using GlobalConstants;
 
 namespace MainLib
 {
-    public class MathTuple : IEquatable<MathTuple>
+    public struct MathTuple : IEquatable<MathTuple>
     {
         public MathTuple(double x, double y, double z, double w)
         {

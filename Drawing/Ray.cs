@@ -2,21 +2,21 @@
 
 namespace Drawing;
 
-public class Ray
+public struct Ray
 {
     public Ray(MathTuple origin, MathTuple direction)
     {
         Direction = direction;
-        Origin = origin;
+        Origin    = origin;
     }
 
-    public MathTuple Origin { get; }
+    public MathTuple Origin    { get; }
     public MathTuple Direction { get; }
 
-    public Point Position(double distance)
+    public MathTuple Position(double distance)
     {
         var res = (Origin + Direction * distance);
-        return new Point(res.X, res.Y, res.Z);
+        return MathTuple.GetPoint(res.X, res.Y, res.Z);
     }
 
     /// <summary>
@@ -24,16 +24,16 @@ public class Ray
     /// </summary>
     /// <param name="s">La sfera con cui verficare le intersezioni</param>
     /// <returns>Le distanze in cui il raggio interseca la sfera</returns>
-    public List<Intersection> Intersects(Sphere s)
+    public Intersection[] Intersects(Sphere s)
     {
         return s.Intersect(this);
     }
 
     public Ray Transform(Matrix m)
     {
-        var transformedOrigin = m * Origin;
+        var transformedOrigin    = m * Origin;
         var transformedDirection = m * Direction;
-        return new Ray(new Point(transformedOrigin.X, transformedOrigin.Y, transformedOrigin.Z),
-            new Vector(transformedDirection.X, transformedDirection.Y, transformedDirection.Z));
+        return new Ray(MathTuple.GetPoint(transformedOrigin.X, transformedOrigin.Y, transformedOrigin.Z),
+            MathTuple.GetVector(transformedDirection.X, transformedDirection.Y, transformedDirection.Z));
     }
 }
