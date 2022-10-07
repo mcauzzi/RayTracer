@@ -18,6 +18,41 @@ namespace MainLib
         public double Z { get; private set; }
         public double W { get; set; }
 
+        public double this[int row]
+        {
+            get
+            {
+                return row switch
+                {
+                    0 => X,
+                    1 => Y,
+                    2 => Z,
+                    3 => W,
+                    _ => -1
+                };
+            }
+            set
+            {
+                switch (row)
+                {
+                    case 0:
+                        X = value;
+                        break;
+                    case 1:
+                        Y = value;
+                        break;
+                    case 2:
+                        Z = value;
+                        break;
+                    case 3:
+                        W = value;
+                        break;
+                    default:
+                        throw new ArgumentException();
+                }
+            }
+        }
+
         public static MathTuple GetPoint(double x, double y, double z)
         {
             return new MathTuple(w: 1, x: x, y: y, z: z);

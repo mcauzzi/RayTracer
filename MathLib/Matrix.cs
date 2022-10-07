@@ -82,7 +82,7 @@ public class Matrix : IEquatable<Matrix>
 
     public Matrix GetInverse()
     {
-        var res = new Matrix(new double[Mtx.GetLength(0), Mtx.GetLength(1)]);
+        var res         = new Matrix(new double[Mtx.GetLength(0), Mtx.GetLength(1)]);
         var determinant = GetDeterminant();
         for (var i = 0; i < Mtx.GetLength(0); i++)
         {
@@ -118,12 +118,18 @@ public class Matrix : IEquatable<Matrix>
 
     public static MathTuple operator *(Matrix left, MathTuple right)
     {
-        var temp = new[] { right.X, right.Y, right.Z, right.W };
+        var res = new MathTuple(0,
+            0,
+            0,
+            0);
+        for (int i = 0; i < left.Mtx.GetLength(0); i++)
+        {
+            for (int j = 0; j < left.Mtx.GetLength(1); j++)
+            {
+                res[i] += left.Mtx[i, j] * right[j];
+            }
+        }
 
-        var res = new MathTuple(temp.Zip(left.GetRow(0), (col, row) => col * row).Sum(),
-            temp.Zip(left.GetRow(1), (col, row) => col * row).Sum(),
-            temp.Zip(left.GetRow(2), (col, row) => col * row).Sum(),
-            temp.Zip(left.GetRow(3), (col, row) => col * row).Sum());
         return res;
     }
 
