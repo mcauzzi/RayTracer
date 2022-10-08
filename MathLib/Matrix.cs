@@ -111,12 +111,9 @@ public struct Matrix : IEquatable<Matrix>
         {
             for (var j = 0; j < res.Mtx.GetLength(1); j++)
             {
-                var col = left.GetRow(i);
-                var row = right.GetColumn(j);
-
-                for (int k = 0; k < row.Length; k++)
+                for (int k = 0; k < res.Mtx.GetLength(1); k++)
                 {
-                    res[i, j] += col[k] * row[k];
+                    res[i, j] += left[i, k] * right[k, j];
                 }
             }
         }
@@ -126,30 +123,49 @@ public struct Matrix : IEquatable<Matrix>
 
     public static MathTuple operator *(Matrix left, MathTuple right)
     {
-        var res = new double[4];
-        for (int i = 0; i < left.Mtx.GetLength(0); i++)
-        {
-            for (int j = 0; j < left.Mtx.GetLength(1); j++)
-            {
-                switch (j)
-                {
-                    case 0:
-                        res[i] += left.Mtx[i, j] * right.X;
-                        break;
-                    case 1:
-                        res[i] += left.Mtx[i, j] * right.Y;
-                        break;
-                    case 2:
-                        res[i] += left.Mtx[i, j] * right.Z;
-                        break;
-                    case 3:
-                        res[i] += left.Mtx[i, j] * right.W;
-                        break;
-                }
-            }
-        }
+        var res = new MathTuple();
+        res.X += left.Mtx[0, 0] * right.X;
+        res.X += left.Mtx[0, 1] * right.Y;
+        res.X += left.Mtx[0, 2] * right.Z;
+        res.X += left.Mtx[0, 3] * right.W;
 
-        return new MathTuple(res[0], res[1], res[2], res[3]);
+        res.Y += left.Mtx[1, 0] * right.X;
+        res.Y += left.Mtx[1, 1] * right.Y;
+        res.Y += left.Mtx[1, 2] * right.Z;
+        res.Y += left.Mtx[1, 3] * right.W;
+
+        res.Z += left.Mtx[2, 0] * right.X;
+        res.Z += left.Mtx[2, 1] * right.Y;
+        res.Z += left.Mtx[2, 2] * right.Z;
+        res.Z += left.Mtx[2, 3] * right.W;
+
+        res.W += left.Mtx[3, 0] * right.X;
+        res.W += left.Mtx[3, 1] * right.Y;
+        res.W += left.Mtx[3, 2] * right.Z;
+        res.W += left.Mtx[3, 3] * right.W;
+        // for (int i = 0; i < 4; i++)
+        // {
+        //     for (int j = 0; j < 4; j++)
+        //     {
+        //         switch (j)
+        //         {
+        //             case 0:
+        //                 res[i] += left.Mtx[i, j] * right.X;
+        //                 break;
+        //             case 1:
+        //                 res[i] += left.Mtx[i, j] * right.Y;
+        //                 break;
+        //             case 2:
+        //                 res[i] += left.Mtx[i, j] * right.Z;
+        //                 break;
+        //             case 3:
+        //                 res[i] += left.Mtx[i, j] * right.W;
+        //                 break;
+        //         }
+        //     }
+        // }
+
+        return res;
     }
 
 

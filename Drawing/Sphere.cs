@@ -28,7 +28,7 @@ public class Sphere : Shape, IEquatable<Sphere>
         var a            = MathTuple.DotProduct(r.Direction, r.Direction);
         var b            = 2 * MathTuple.DotProduct(r.Direction, sphereToRay);
         var c            = MathTuple.DotProduct(sphereToRay,     sphereToRay) - 1;
-        var discriminant = Math.Pow(b, 2) - 4 * a * c;
+        var discriminant = b * b - 4 * a * c;
         if (discriminant < 0)
         {
             return Array.Empty<Intersection>();

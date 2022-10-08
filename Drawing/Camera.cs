@@ -130,21 +130,6 @@ public class Camera
         }
     }
 
-    public Canvas RenderSingleThread(World world)
-    {
-        var res = new Canvas(HSize, VSize);
-
-        for (int i = 0; i < VSize; i++)
-        {
-            for (int j = 0; j < HSize; j++)
-            {
-                GetRenderedPixel(world, j, i, res);
-            }
-        }
-
-        return res;
-    }
-
     private void GetRenderedPixel(World world, int j, int i, Canvas res)
     {
         var ray = RayForPixel(j, i);

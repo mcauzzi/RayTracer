@@ -37,7 +37,7 @@ public class IntersectionTests
         var s  = new Sphere();
         var i1 = new Intersection(s, 1);
         var i2 = new Intersection(s, 2);
-        var h  = Intersection.Hit(new List<Intersection>() { i1, i2 });
+        var h  = Intersection.Hit(new Intersection[] { i1, i2 });
         Assert.Equal(i1, h);
     }
 
@@ -47,7 +47,7 @@ public class IntersectionTests
         var s  = new Sphere();
         var i1 = new Intersection(s, -1);
         var i2 = new Intersection(s, 1);
-        var h  = Intersection.Hit(new List<Intersection>() { i1, i2 });
+        var h  = Intersection.Hit(new Intersection[] { i1, i2 });
         Assert.Equal(i2, h);
     }
 
@@ -57,7 +57,7 @@ public class IntersectionTests
         var s  = new Sphere();
         var i1 = new Intersection(s, -2);
         var i2 = new Intersection(s, -1);
-        var h  = Intersection.Hit(new List<Intersection>() { i1, i2 });
+        var h  = Intersection.Hit(new Intersection[] { i1, i2 });
         Assert.Null(h);
     }
 
@@ -69,7 +69,7 @@ public class IntersectionTests
         var i2 = new Intersection(s, 7);
         var i3 = new Intersection(s, -3);
         var i4 = new Intersection(s, 2);
-        var h  = Intersection.Hit(new List<Intersection>() { i1, i2, i3, i4 });
+        var h  = Intersection.Hit(new Intersection[] { i1, i2, i3, i4 });
         Assert.Equal(i4, h);
     }
 
@@ -148,10 +148,10 @@ public class IntersectionTests
         C.Transformation           = Transforms.GetTranslationMatrix(0, 0, 0.25);
         C.Material.RefractiveIndex = 2.5;
         var r = new Ray(MathTuple.GetPoint(0, 0, -4), MathTuple.GetVector(0, 0, 1));
-        var xs = new List<Intersection>
+        var xs = new Intersection[]
             { new(A, 2), new(B, 2.75), new(C, 3.25), new(B, 4.75), new(C, 5.25), new(A, 6) };
         var comps = new List<Computation>();
-        for (int i = 0; i < xs.Count; i++)
+        for (int i = 0; i < xs.Length; i++)
         {
             comps.Add(xs[i]
                 .PrepareComputation(r, xs));
@@ -191,7 +191,7 @@ public class IntersectionTests
         s.Transformation =  Transforms.GetTranslationMatrix(0, 0, 1);
         s.Transformation *= Transforms.GetTranslationMatrix(0, 0, 1);
         var i     = new Intersection(s, 5);
-        var xs    = new List<Intersection>() { i };
+        var xs    = new Intersection[] { i };
         var comps = i.PrepareComputation(r, xs);
         Assert.True(comps.UnderPoint.Z > (Constants.Epsilon / 2), $"{comps.UnderPoint.Z}| {-(Constants.Epsilon / 2)}");
         Assert.True(comps.Point.Z < comps.UnderPoint.Z,           $"{comps.Point.Z} | {comps.UnderPoint.Z}");
@@ -202,7 +202,7 @@ public class IntersectionTests
     {
         var shape       = Sphere.GlassSphere;
         var ray         = new Ray(MathTuple.GetPoint(0, 0, Math.Sqrt(2) / 2), MathTuple.GetVector(0, 1, 0));
-        var xs          = new List<Intersection>() { new(shape, -Math.Sqrt(2) / 2), new(shape, Math.Sqrt(2) / 2) };
+        var xs          = new Intersection[] { new(shape, -Math.Sqrt(2) / 2), new(shape, Math.Sqrt(2) / 2) };
         var comps       = xs[1].PrepareComputation(ray, xs);
         var reflectance = comps.Schlick();
         Assert.Equal(1, reflectance);
@@ -213,7 +213,7 @@ public class IntersectionTests
     {
         var shape       = Sphere.GlassSphere;
         var ray         = new Ray(MathTuple.GetPoint(0, 0, 0), MathTuple.GetVector(0, 1, 0));
-        var xs          = new List<Intersection>() { new(shape, -1), new(shape, 1) };
+        var xs          = new Intersection[] { new(shape, -1), new(shape, 1) };
         var comps       = xs[1].PrepareComputation(ray, xs);
         var reflectance = comps.Schlick();
         Assert.Equal(0.04, reflectance, 4);
@@ -224,7 +224,7 @@ public class IntersectionTests
     {
         var shape       = Sphere.GlassSphere;
         var ray         = new Ray(MathTuple.GetPoint(0, 0.99, -2), MathTuple.GetVector(0, 0, 1));
-        var xs          = new List<Intersection>() { new(shape, 1.8589) };
+        var xs          = new Intersection[] { new(shape, 1.8589) };
         var comps       = xs[0].PrepareComputation(ray, xs);
         var reflectance = comps.Schlick();
         Assert.Equal(0.48873, reflectance, 5);

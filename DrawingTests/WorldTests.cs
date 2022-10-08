@@ -27,10 +27,10 @@ public class WorldTests
     [Fact]
     public void IntesectWorld()
     {
-        var                w  = World.GetDefaultWorld();
-        var                r  = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 0, 1));
-        List<Intersection> wr = w.Intersect(r);
-        Assert.Equal(4, wr.Count);
+        var w  = World.GetDefaultWorld();
+        var r  = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 0, 1));
+        var wr = w.Intersect(r);
+        Assert.Equal(4, wr.Length);
         Assert.Equal(4, wr[0]
             .Distance);
         Assert.Equal(4.5, wr[1]
@@ -234,7 +234,7 @@ public class WorldTests
         var w     = World.GetDefaultWorld();
         var shape = w.Shapes[0];
         var r     = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 0, 1));
-        var xs    = new List<Intersection>() { new(shape, 4), new(shape, 6) };
+        var xs    = new Intersection[] { new(shape, 4), new(shape, 6) };
         var comps = xs[0]
             .PrepareComputation(r, xs);
         var c = w.RefractedColor(comps, 5);
@@ -249,7 +249,7 @@ public class WorldTests
         shape.Material.Transparency    = 1;
         shape.Material.RefractiveIndex = 1.5;
         var r  = new Ray(MathTuple.GetPoint(0, 0, -5), MathTuple.GetVector(0, 0, 1));
-        var xs = new List<Intersection>() { new(shape, 4), new(shape, 6) };
+        var xs = new Intersection[] { new(shape, 4), new(shape, 6) };
         var comps = xs[0]
             .PrepareComputation(r, xs);
         var c = w.RefractedColor(comps, 0);
@@ -264,7 +264,7 @@ public class WorldTests
         shape.Material.Transparency    = 1;
         shape.Material.RefractiveIndex = 1.5;
         var r     = new Ray(MathTuple.GetPoint(0, 0, Math.Sqrt(2) / 2), MathTuple.GetVector(0, 1, 0));
-        var xs    = new List<Intersection>() { new(shape, -Math.Sqrt(2) / 2), new(shape, Math.Sqrt(2) / 2) };
+        var xs    = new Intersection[] { new(shape, -Math.Sqrt(2) / 2), new(shape, Math.Sqrt(2) / 2) };
         var comps = xs[1].PrepareComputation(r, xs);
         var c     = w.RefractedColor(comps, 5);
         Assert.Equal(Color.Black, c);
@@ -281,7 +281,7 @@ public class WorldTests
         B.Material.Transparency    = 1.0;
         B.Material.RefractiveIndex = 1.5;
         var r     = new Ray(MathTuple.GetPoint(0, 0, 0.1), MathTuple.GetVector(0, 1, 0));
-        var xs    = new List<Intersection>() { new(A, -0.9899), new(B, -0.4899), new(B, 0.4899), new(A, 0.9899) };
+        var xs    = new Intersection[] { new(A, -0.9899), new(B, -0.4899), new(B, 0.4899), new(A, 0.9899) };
         var comps = xs[2].PrepareComputation(r, xs);
         var c     = w.RefractedColor(comps, 5);
         Assert.Equal(new Color(0, 0.99887, 0.04721), c);
@@ -308,7 +308,7 @@ public class WorldTests
         w.Shapes.Add(floor);
         w.Shapes.Add(ball);
         var r     = new Ray(MathTuple.GetPoint(0, 0, -3), MathTuple.GetVector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
-        var xs    = new List<Intersection>() { new(floor, Math.Sqrt(2)) };
+        var xs    = new Intersection[] { new(floor, Math.Sqrt(2)) };
         var comps = xs[0].PrepareComputation(r, xs);
         var c     = w.ShadeHit(comps, 5);
         Assert.Equal(new Color(0.93642, 0.68642, 0.68642), c);
@@ -335,7 +335,7 @@ public class WorldTests
         w.Shapes.Add(floor);
         w.Shapes.Add(ball);
         var r     = new Ray(MathTuple.GetPoint(0, 0, -3), MathTuple.GetVector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
-        var xs    = new List<Intersection>() { new(floor, Math.Sqrt(2)) };
+        var xs    = new Intersection[] { new(floor, Math.Sqrt(2)) };
         var comps = xs[0].PrepareComputation(r, xs);
         var c     = w.ShadeHit(comps, 5);
         Assert.Equal(new Color(0.93391, 0.69643, 0.69243), c);

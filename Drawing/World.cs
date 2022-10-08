@@ -32,27 +32,41 @@ public class World
 
     public static World GetDefaultWorld() => new();
 
-    public List<Intersection> Intersect(Ray ray)
+    public Intersection[] Intersect(Ray ray)
     {
-        var intersection = new List<Intersection>();
-
-        foreach (var shape in Shapes)
+        var intersectionsPershape = new Intersection[Shapes.Count][];
+        var totalIntersections    = 0;
+        for (var index = 0; index < Shapes.Count; index++)
         {
-            intersection.AddRange(shape.Intersect(ray));
+            var shapesIntersections = Shapes[index].Intersect(ray);
+            intersectionsPershape[index] =  shapesIntersections;
+            totalIntersections           += shapesIntersections.Length;
         }
 
-        return intersection.OrderBy(x => x.Distance)
-            .ToList();
+        var res = new Intersection[totalIntersections];
+        for (int i = 0; i < Shapes.Count; i++)
+        {
+            for (int j = 0; j < intersectionsPershape[i].Length; j++)
+            {
+                res[totalIntersections - 1] = intersectionsPershape[i][j];
+                totalIntersections--;
+            }
+        }
+
+        Array.Sort(res, Intersection.DistanceComparer);
+        return res;
     }
 
     public Color ShadeHit(Computation comps, int remaining = 5)
     {
-        var s     = comps.Obj;
-        var color = Color.Black;
-        var surface = Lights.Aggregate(color,
-            (total, light) => total + s.Material.GetLighting(light, comps.Obj, comps.OverPoint, comps.EyeV,
-                comps.NormalV,
-                IsShadowed(comps.OverPoint, light)));
+        var color   = Color.Black;
+        var surface = color;
+        for (var i = 0; i < Lights.Count; i++)
+        {
+            surface += comps.Obj.Material.GetLighting(Lights[i], comps.Obj, comps.OverPoint, comps.EyeV,
+                comps.NormalV, IsShadowed(comps.OverPoint, Lights[i]));
+        }
+
         var reflected = ReflectedColor(comps, remaining);
         var refracted = RefractedColor(comps, remaining);
         var mat       = comps.Obj.Material;
@@ -69,7 +83,7 @@ public class World
     {
         var inter = Intersect(r);
         var hits  = Intersection.Hit(inter);
-        if (hits == null)
+        if (inter.Length == 0 || hits == null)
         {
             return Color.Black;
         }

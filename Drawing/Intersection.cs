@@ -11,10 +11,12 @@ public class Intersection
         Distance = distance;
     }
 
+    public static IComparer<Intersection> DistanceComparer { get; } = new DistanceRelationalComparer();
+
     public double Distance { get; }
     public Shape  Obj      { get; }
 
-    public Computation PrepareComputation(Ray r, List<Intersection>? intersections = null)
+    public Computation PrepareComputation(Ray r, Intersection[]? intersections = null)
     {
         var point   = r.Position(Distance);
         var normalV = Obj.Normal(point);
@@ -30,7 +32,7 @@ public class Intersection
         var    OverPoint  = point + (normalV * Constants.Epsilon);
         var    UnderPoint = point - (normalV * Constants.Epsilon);
         double n1         = 0, n2 = 0;
-        if (intersections != null)
+        if (intersections?.Length > 0)
         {
             CalculateN1N2(intersections, out n1, out n2);
         }
@@ -41,12 +43,13 @@ public class Intersection
         return res;
     }
 
-    private void CalculateN1N2(List<Intersection>? intersections, out double n1, out double n2)
+    private void CalculateN1N2(Intersection[] intersections, out double n1, out double n2)
     {
         var containers = new List<Shape>();
         n1 = n2        = 0;
-        foreach (var i in intersections)
+        for (var index = 0; index < intersections.Length; index++)
         {
+            var i = intersections[index];
             if (i == this)
             {
                 if (!containers.Any())
@@ -87,32 +90,25 @@ public class Intersection
         }
     }
 
-    private double ComputeN2(List<Shape> containers)
-    {
-        if (!containers.Any())
-        {
-            return 1.0;
-        }
-
-        return containers.TakeLast(1)
-            .First()
-            .Material.RefractiveIndex;
-    }
-
-    private double ComputeN1(Intersection i, List<Shape> containers)
-    {
-        return 0;
-    }
-
     /// <summary>
     /// Ritorna la distanza del primo HIT su un'oggetto
     /// </summary>
     /// <param name="xs">Una lista d'intersezioni con un oggetto</param>
     /// <returns>Le distanze in cui il raggio interseca la sfera</returns>
-    public static Intersection? Hit(List<Intersection> xs)
+    public static Intersection? Hit(Intersection[] xs)
     {
-        return xs.OrderBy(x => x.Distance)
-            .FirstOrDefault(x => x.Distance > 0);
+        return xs.FirstOrDefault(x => x.Distance > 0);
+    }
+
+    private sealed class DistanceRelationalComparer : IComparer<Intersection>
+    {
+        public int Compare(Intersection x, Intersection y)
+        {
+            if (ReferenceEquals(x,    y)) return 0;
+            if (ReferenceEquals(null, y)) return 1;
+            if (ReferenceEquals(null, x)) return -1;
+            return x.Distance.CompareTo(y.Distance);
+        }
     }
 }
 
