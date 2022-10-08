@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\GlobalConstants\GlobalConstants.csproj"/>
+        <ProjectReference Include="..\Globals\Globals.csproj"/>
     </ItemGroup>
 
 </Project>

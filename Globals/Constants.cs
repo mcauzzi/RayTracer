@@ -1,4 +1,4 @@
-﻿namespace GlobalConstants
+﻿namespace Globals
 {
     public static class Constants
     {

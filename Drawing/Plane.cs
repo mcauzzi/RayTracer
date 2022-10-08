@@ -1,11 +1,11 @@
-﻿using GlobalConstants;
+﻿using Globals;
 using MainLib;
 
 namespace Drawing;
 
 public class Plane : Shape
 {
-    public override MathTuple LocalNormal(MathTuple objPoint)
+    public override MathTuple LocalNormal(MathTuple point)
     {
         return MathTuple.GetVector(0, 1, 0);
     }

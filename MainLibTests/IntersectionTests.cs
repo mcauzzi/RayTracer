@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Drawing;
-using GlobalConstants;
+using Globals;
 using MainLib;
 using Xunit;
 
@@ -69,7 +69,7 @@ public class IntersectionTests
         var i2 = new Intersection(s, 7);
         var i3 = new Intersection(s, -3);
         var i4 = new Intersection(s, 2);
-        var h  = Intersection.Hit(new Intersection[] { i1, i2, i3, i4 });
+        var h  = Intersection.Hit(new[] { i1, i2, i3, i4 });
         Assert.Equal(i4, h);
     }
 

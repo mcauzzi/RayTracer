@@ -36,7 +36,7 @@ public abstract class Shape
         return worldNormal.Normalize();
     }
 
-    public abstract MathTuple LocalNormal(MathTuple objPoint);
+    public abstract MathTuple LocalNormal(MathTuple point);
 
     public abstract Intersection[] LocalIntersect(Ray r);
 

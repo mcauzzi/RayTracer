@@ -1,4 +1,4 @@
-﻿using GlobalConstants;
+﻿using Globals;
 
 namespace MainLib;
 
@@ -58,7 +58,7 @@ public class Color : IEquatable<Color>
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (obj.GetType() != GetType()) return false;
         return Equals((Color)obj);
     }
 

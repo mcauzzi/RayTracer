@@ -1,6 +1,6 @@
 ﻿using Drawing;
 using Drawing.Patterns;
-using GlobalConstants;
+using Globals;
 
 namespace MainLib;
 

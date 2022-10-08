@@ -1,5 +1,5 @@
 ﻿using System;
-using GlobalConstants;
+using Globals;
 
 namespace MainLib
 {
@@ -103,7 +103,7 @@ namespace MainLib
 
         public static MathTuple operator +(MathTuple left, MathTuple right)
         {
-            return MathTuple.Add(left, right);
+            return Add(left, right);
         }
 
         private static MathTuple Subtract(MathTuple left, MathTuple right)
@@ -113,12 +113,12 @@ namespace MainLib
 
         public static MathTuple operator -(MathTuple left, MathTuple right)
         {
-            return MathTuple.Subtract(left, right);
+            return Subtract(left, right);
         }
 
         public static MathTuple operator -(MathTuple right)
         {
-            return MathTuple.Subtract(new MathTuple(0, 0, 0, 0), right);
+            return Subtract(new MathTuple(0, 0, 0, 0), right);
         }
 
         public static MathTuple operator *(MathTuple tuple, double scalar)

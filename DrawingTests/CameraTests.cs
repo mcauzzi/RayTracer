@@ -1,5 +1,5 @@
 ﻿using Drawing;
-using GlobalConstants;
+using Globals;
 using MainLib;
 
 namespace DrawingTests;

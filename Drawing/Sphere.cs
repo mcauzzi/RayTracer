@@ -41,9 +41,9 @@ public class Sphere : Shape, IEquatable<Sphere>
         };
     }
 
-    public override MathTuple LocalNormal(MathTuple p)
+    public override MathTuple LocalNormal(MathTuple point)
     {
-        return p - MathTuple.GetPoint(0, 0, 0);
+        return point - MathTuple.GetPoint(0, 0, 0);
     }
 
     #region Equality
@@ -60,7 +60,7 @@ public class Sphere : Shape, IEquatable<Sphere>
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (obj.GetType() != GetType()) return false;
         return Equals((Sphere)obj);
     }
 

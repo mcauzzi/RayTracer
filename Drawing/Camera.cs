@@ -1,4 +1,4 @@
-﻿using GlobalConstants;
+﻿using Globals;
 using MainLib;
 
 namespace Drawing;
@@ -133,7 +133,7 @@ public class Camera
     private void GetRenderedPixel(World world, int j, int i, Canvas res)
     {
         var ray = RayForPixel(j, i);
-        var c   = world.ColorAt(ray, 5);
+        var c   = world.ColorAt(ray, 10);
         res.WritePixel(c, j, i);
     }
 }

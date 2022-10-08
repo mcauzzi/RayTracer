@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathLib", "MathLib\MathLib.csproj", "{AA6DC602-DCC4-4C99-B184-B2152DEE010C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalConstants", "GlobalConstants\GlobalConstants.csproj", "{4CA99EE0-CC95-4207-BC92-5A2F672FEC40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Globals", "Globals\Globals.csproj", "{4CA99EE0-CC95-4207-BC92-5A2F672FEC40}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainLibTests", "MainLibTests\MainLibTests.csproj", "{03AF8E05-8A3A-42B4-AC46-CD3637DBC233}"
 EndProject
