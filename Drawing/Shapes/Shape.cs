@@ -1,6 +1,6 @@
 ﻿using MainLib;
 
-namespace Drawing;
+namespace Drawing.Shapes;
 
 public abstract class Shape
 {

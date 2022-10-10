@@ -1,4 +1,5 @@
-﻿using MainLib;
+﻿using Drawing.Shapes;
+using MainLib;
 
 namespace Drawing;
 
@@ -76,7 +77,8 @@ public class World
             return surface + reflected * reflectance + refracted * (1 - reflectance);
         }
 
-        return surface + reflected + refracted;
+        var res = surface + reflected + refracted;
+        return res;
     }
 
     public Color ColorAt(Ray r, int remaining = 5)

@@ -1,4 +1,5 @@
-﻿using MainLib;
+﻿using Drawing.Shapes;
+using MainLib;
 
 namespace Drawing.Patterns;
 

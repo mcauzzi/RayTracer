@@ -1,7 +1,7 @@
 ﻿using Globals;
 using MainLib;
 
-namespace Drawing;
+namespace Drawing.Shapes;
 
 public class Plane : Shape
 {

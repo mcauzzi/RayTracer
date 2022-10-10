@@ -3,53 +3,89 @@
 
 using System.Diagnostics;
 using Drawing;
+using Drawing.Shapes;
 using MainLib;
 
 var backGroundMaterial = new Material
 {
-    Color           = Color.Red, Specular = 0.2, Ambient = 0.1, Diffuse = 0.1, Reflective = 0, Transparency = 1,
-    RefractiveIndex = 1.52, Shininess     = 300
+    Color = new Color(0.3, 0.3, 0.3), Specular = 0.2, Ambient = 0.1, Diffuse = 0.4, Reflective = 0.1, Transparency = 0,
+    RefractiveIndex = 1.52, Shininess = 300
 };
-var backGround2 = new Plane
+var floor = new Plane
 {
-    Material       = backGroundMaterial,
-    Transformation = Transforms.GetTranslationMatrix(0, 11, 0)
+    Material = backGroundMaterial
 };
-var backGround3 = new Plane
+var background = new Plane
 {
-    Material = new Material
+    Material = backGroundMaterial,
+    Transformation = Transforms.GetTranslationMatrix(10, 0, 10) * Transforms.RotateX(Math.PI / 2) *
+                     Transforms.RotateZ(-Math.PI / 4)
+};
+
+var cylinder = new Cylinder()
+{
+    ClosedBottom   = true, ClosedTop = true, Maximum = 4, Minimum = 0,
+    Transformation = Transforms.GetTranslationMatrix(5, 0, 5),
+    Material = new Material()
     {
-        Color           = new Color(0.1, 0.1, 0.1), Specular = 1, Ambient = 0.4, Diffuse = 0.1, Reflective = 1,
-        RefractiveIndex = 1.5, Shininess                     = 200
-    },
-    Transformation = Transforms.GetTranslationMatrix(0, 0, 20) * Transforms.RotateZ(Math.PI / 2) *
-                     Transforms.RotateX(Math.PI / 2)
+        Color = new Color(0.1, 0.1, 0.1), Specular = 1, Ambient = 0.1, Diffuse = 0.1, Reflective = 0, Transparency = 1,
+        RefractiveIndex = 1, Shininess = 300
+    }
 };
-var       shapesList = new List<Shape>();
-const int cubeLength = 4;
-const int startCubex = 10;
-const int startCubeZ = 10;
-CreateCubeOfSpheres(cubeLength, shapesList, startCubex, startCubeZ);
-CreateCubeOfCubes(cubeLength, shapesList, startCubex, startCubeZ);
+var cube = new Cube()
+{
+    Transformation = Transforms.GetTranslationMatrix(4.5, 1, 12),
+    Material = new Material()
+    {
+        Color           = Color.Red, Specular = 0.8, Ambient = 0.1, Diffuse = 0.5, Reflective = 1, Transparency = 0,
+        RefractiveIndex = 1
+    }
+};
+var sphereInside = new Sphere()
+{
+    Transformation = Transforms.GetTranslationMatrix(5, 2, 5) * Transforms.GetScalingMatrix(0.5, 0.5, 0.5),
+    Material = new Material()
+    {
+        Color           = Color.Blue, Specular = 1, Ambient = 0.1, Diffuse = 0.1, Reflective = 1, Transparency = 0,
+        Shininess       = 300,
+        RefractiveIndex = 1.52
+    }
+};
+var sphere = new Sphere()
+{
+    Transformation = Transforms.GetTranslationMatrix(2.5, 1, 5),
+    Material = new Material()
+    {
+        Color           = Color.Green, Specular = 0.8, Ambient = 0.2, Diffuse = 0.4, Reflective = 0, Transparency = 0,
+        RefractiveIndex = 1.52
+    }
+};
+var sphere2 = new Sphere()
+{
+    Transformation = Transforms.GetTranslationMatrix(5, 1, 2),
+    Material = new Material()
+    {
+        Color        = new Color(0.7, 0.7, 0.3), Specular = 0.8, Ambient = 0.2, Diffuse = 0.4, Reflective = 0,
+        Transparency = 0, RefractiveIndex                 = 1.52
+    }
+};
 var camera = new Camera(1280, 720, Math.PI / 2)
 {
     Transform = Transforms.ViewTransform(
-        MathTuple.GetPoint(-7, 5, -7),
-        MathTuple.GetPoint(10, 5, 10),
-        MathTuple.GetPoint(0,  1, 0)
+        MathTuple.GetPoint(0, 5, 0),
+        MathTuple.GetPoint(5, 0, 5),
+        MathTuple.GetPoint(0, 1, 0)
     ),
 };
-var pl2    = new PointLight(Color.White, MathTuple.GetPoint(5, 12, 5));
-var pl     = new PointLight(Color.White, MathTuple.GetPoint(5, 5,  0));
-var shapes = new List<Shape> { };
-shapes.AddRange(shapesList);
+var pl     = new PointLight(Color.White, MathTuple.GetPoint(7,  2, -4));
+var pl2    = new PointLight(Color.White, MathTuple.GetPoint(-7, 2, 4));
+var shapes = new List<Shape> { floor, cylinder, sphere, cube, sphere2, sphereInside, background };
 var world = new World(new List<PointLight> { pl, pl2 },
     shapes);
 
 var st = new Stopwatch();
 
 st.Start();
-
 var canvas = camera.RenderWithTasks(world);
 st.Stop();
 Console.WriteLine(
@@ -104,6 +140,35 @@ void CreateCubeOfCubes(int cubeLength1, List<Shape> cubes, int startCubex1, int 
                     {
                         Color           = new Color(redColor, greenColor, blueColor),
                         Ambient         = 0.1, Diffuse = 0.5, Specular = 0.8, Reflective = 0.4, Transparency = 1,
+                        RefractiveIndex = 1, Shininess = 300,
+                    }
+                });
+            }
+        }
+    }
+}
+
+void CreateCubeOfCylinders(int cubeLength, List<Shape> cubes, int startCubex1, int startCubeZ1)
+{
+    for (int i = 0; i < cubeLength; i++)
+    {
+        for (int j = 0; j < cubeLength; j++)
+        {
+            for (int k = 0; k < cubeLength; k++)
+            {
+                var redColor   = i / ((double)cubeLength - 1);
+                var greenColor = j / ((double)cubeLength - 1);
+                var blueColor  = k / ((double)cubeLength - 1);
+
+                cubes.Add(new Cylinder()
+                {
+                    ClosedBottom = true, ClosedTop = true, Maximum = 1, Minimum = -1,
+                    Transformation =
+                        Transforms.GetTranslationMatrix(startCubex1 - i * 2.5, 0 + j * 2.5, startCubeZ1 - k * 2.5),
+                    Material = new Material
+                    {
+                        Color           = new Color(redColor, greenColor, blueColor),
+                        Ambient         = 0.1, Diffuse = 0.5, Specular = 0.8, Reflective = 0.4, Transparency = 0.1,
                         RefractiveIndex = 1, Shininess = 300,
                     }
                 });

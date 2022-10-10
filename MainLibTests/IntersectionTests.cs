@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Drawing;
+using Drawing.Shapes;
 using Globals;
 using MainLib;
 using Xunit;

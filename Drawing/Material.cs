@@ -1,5 +1,5 @@
-﻿using Drawing;
-using Drawing.Patterns;
+﻿using Drawing.Patterns;
+using Drawing.Shapes;
 using Globals;
 
 namespace MainLib;
