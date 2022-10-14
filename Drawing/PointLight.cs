@@ -1,15 +1,17 @@
-﻿namespace MainLib;
+﻿using MainLib;
+
+namespace Drawing;
 
 public class PointLight : IEquatable<PointLight>
 {
     public PointLight(Color intensity, MathTuple position)
     {
         Intensity = intensity;
-        Position  = position;
+        Position = position;
     }
 
-    public Color     Intensity { get; }
-    public MathTuple Position  { get; }
+    public Color Intensity { get; }
+    public MathTuple Position { get; }
 
     #region Equality
 

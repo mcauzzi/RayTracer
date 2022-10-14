@@ -9,4 +9,8 @@
         <ProjectReference Include="..\Globals\Globals.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3"/>
+    </ItemGroup>
+
 </Project>

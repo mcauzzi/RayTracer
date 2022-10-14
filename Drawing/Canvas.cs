@@ -1,4 +1,4 @@
-﻿namespace MainLib;
+﻿namespace Drawing;
 
 public class Canvas
 {

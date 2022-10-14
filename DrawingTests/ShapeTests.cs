@@ -1,4 +1,5 @@
-﻿using Drawing.Shapes;
+﻿using Drawing;
+using Drawing.Shapes;
 using MainLib;
 
 namespace DrawingTests;

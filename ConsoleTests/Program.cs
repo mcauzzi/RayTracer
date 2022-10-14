@@ -1,4 +1,6 @@
 ﻿using System;
+using Drawing;
+using FileManagement;
 using MainLib;
 
 namespace ConsoleTests

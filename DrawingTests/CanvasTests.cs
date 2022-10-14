@@ -1,4 +1,4 @@
-﻿using MainLib;
+﻿using Drawing;
 
 namespace DrawingTests;
 

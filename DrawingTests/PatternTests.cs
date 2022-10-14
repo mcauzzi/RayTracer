@@ -1,4 +1,5 @@
-﻿using Drawing.Patterns;
+﻿using Drawing;
+using Drawing.Patterns;
 using Drawing.Shapes;
 using MainLib;
 
@@ -36,11 +37,11 @@ public class PatternTests
     public void StripeShouldNotBeConstantInX()
     {
         var a = new StripePattern(Color.White, Color.Black);
-        Assert.Equal(Color.White, a.ColorAt(MathTuple.GetPoint(0,    0, 0)));
-        Assert.Equal(Color.White, a.ColorAt(MathTuple.GetPoint(0.9,  0, 0)));
-        Assert.Equal(Color.Black, a.ColorAt(MathTuple.GetPoint(1,    0, 0)));
+        Assert.Equal(Color.White, a.ColorAt(MathTuple.GetPoint(0, 0, 0)));
+        Assert.Equal(Color.White, a.ColorAt(MathTuple.GetPoint(0.9, 0, 0)));
+        Assert.Equal(Color.Black, a.ColorAt(MathTuple.GetPoint(1, 0, 0)));
         Assert.Equal(Color.Black, a.ColorAt(MathTuple.GetPoint(-0.1, 0, 0)));
-        Assert.Equal(Color.Black, a.ColorAt(MathTuple.GetPoint(-1,   0, 0)));
+        Assert.Equal(Color.Black, a.ColorAt(MathTuple.GetPoint(-1, 0, 0)));
         Assert.Equal(Color.White, a.ColorAt(MathTuple.GetPoint(-1.1, 0, 0)));
     }
 
@@ -56,7 +57,7 @@ public class PatternTests
     [Fact]
     public void StripesWithPatternTransformation()
     {
-        var s       = new Sphere();
+        var s = new Sphere();
         var pattern = new StripePattern(Color.White, Color.Black);
         pattern.Transformation = Transforms.GetScalingMatrix(2, 2, 2);
         Assert.Equal(Color.White, pattern.ColorAtObject(s, MathTuple.GetPoint(1.5, 0, 0)));
@@ -76,9 +77,9 @@ public class PatternTests
     public void Gradient()
     {
         var p = new GradientPattern(Color.White, Color.Black);
-        Assert.Equal(Color.White,                 p.ColorAt(MathTuple.GetPoint(0,    0, 0)));
+        Assert.Equal(Color.White, p.ColorAt(MathTuple.GetPoint(0, 0, 0)));
         Assert.Equal(new Color(0.75, 0.75, 0.75), p.ColorAt(MathTuple.GetPoint(0.25, 0, 0)));
-        Assert.Equal(new Color(0.5,  0.5,  0.5),  p.ColorAt(MathTuple.GetPoint(0.5,  0, 0)));
+        Assert.Equal(new Color(0.5, 0.5, 0.5), p.ColorAt(MathTuple.GetPoint(0.5, 0, 0)));
         Assert.Equal(new Color(0.25, 0.25, 0.25), p.ColorAt(MathTuple.GetPoint(0.75, 0, 0)));
     }
 
@@ -86,9 +87,9 @@ public class PatternTests
     public void Ring()
     {
         var p = new RingPattern(Color.White, Color.Black);
-        Assert.Equal(Color.White, p.ColorAt(MathTuple.GetPoint(0,     0, 0)));
-        Assert.Equal(Color.Black, p.ColorAt(MathTuple.GetPoint(1,     0, 0)));
-        Assert.Equal(Color.Black, p.ColorAt(MathTuple.GetPoint(0,     0, 1)));
+        Assert.Equal(Color.White, p.ColorAt(MathTuple.GetPoint(0, 0, 0)));
+        Assert.Equal(Color.Black, p.ColorAt(MathTuple.GetPoint(1, 0, 0)));
+        Assert.Equal(Color.Black, p.ColorAt(MathTuple.GetPoint(0, 0, 1)));
         Assert.Equal(Color.Black, p.ColorAt(MathTuple.GetPoint(0.708, 0, 0.708)));
     }
 
@@ -96,7 +97,7 @@ public class PatternTests
     public void CheckerRepeatInX()
     {
         var p = new CheckerPattern(Color.White, Color.Black);
-        Assert.Equal(Color.White, p.ColorAt(MathTuple.GetPoint(0,    0, 0)));
+        Assert.Equal(Color.White, p.ColorAt(MathTuple.GetPoint(0, 0, 0)));
         Assert.Equal(Color.White, p.ColorAt(MathTuple.GetPoint(0.99, 0, 0)));
         Assert.Equal(Color.Black, p.ColorAt(MathTuple.GetPoint(1.01, 0, 0)));
     }
@@ -105,7 +106,7 @@ public class PatternTests
     public void CheckerRepeatInY()
     {
         var p = new CheckerPattern(Color.White, Color.Black);
-        Assert.Equal(Color.White, p.ColorAt(MathTuple.GetPoint(0, 0,    0)));
+        Assert.Equal(Color.White, p.ColorAt(MathTuple.GetPoint(0, 0, 0)));
         Assert.Equal(Color.White, p.ColorAt(MathTuple.GetPoint(0, 0.99, 0)));
         Assert.Equal(Color.Black, p.ColorAt(MathTuple.GetPoint(0, 1.01, 0)));
     }
