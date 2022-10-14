@@ -12,7 +12,6 @@ public static class CanvasToBitmap
     public static void CreateBitmap(Canvas c, string fileName)
     {
         using Image<Rgba32> image = new(c.Width, c.Height);
-        var index = 0;
         for (var i = 0; i < image.Height; i++)
         {
             for (var j = 0; j < image.Width; j++)
